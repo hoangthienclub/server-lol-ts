@@ -10,7 +10,7 @@ class App {
 
   constructor(controllers: Controller[]) {
     this.app = express();
-
+    
     this.connectToTheDatabase();
     this.initializeMiddlewares();
     this.initializeControllers(controllers);
@@ -28,6 +28,7 @@ class App {
   }
 
   private initializeMiddlewares() {
+    this.app.use(express.static('public'))
     this.app.use(bodyParser.json());
     this.app.use(cookieParser());
   }
@@ -43,12 +44,13 @@ class App {
   }
 
   private connectToTheDatabase() {
-    const {
-      MONGO_USER,
-      MONGO_PASSWORD,
-      MONGO_PATH,
-    } = process.env;
-    mongoose.connect(`mongodb://${MONGO_USER}:${MONGO_PASSWORD}${MONGO_PATH}`);
+    const { MONGO_USER, MONGO_PASSWORD, MONGO_PATH } = process.env;
+    mongoose.connect(`mongodb://${MONGO_PATH}`, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useFindAndModify: false
+    });
+    // mongoose.connect(`mongodb://${MONGO_USER}:${MONGO_PASSWORD}${MONGO_PATH}`);
   }
 }
 
