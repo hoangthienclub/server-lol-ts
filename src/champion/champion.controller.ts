@@ -24,13 +24,49 @@ class ChampionController implements Controller {
   }
 
   private getAllChampions = async (request: Request, response: Response) => {
-    const champions = await this.champion.find().sort({ name: 1 }).select('id name tags key');
-    const result = champions.map((champion) => ({
-      ...champion.toJSON(),
-      thumbnail: `${
-        process.env.SERVER_URL
-      }/images/champions/${champion.id.toLowerCase()}/thumbnails/${champion.id}_0.jpg`,
-    }));
+    const champions = await this.champion.find().sort({ name: 1 });
+    const result = champions.map((champion) => {
+      const item: any = champion.toJSON();
+      item.image.url = `https://cdngarenanow-a.akamaihd.net/games/lol/2020/LOLwebsite/champion/${item.id}_0.jpg`;
+      item.image.square = `http://ddragon.leagueoflegends.com/cdn/11.16.1/img/champion/${item.id}.png`;
+
+      item.skins = item.skins.map((skin: any) => ({
+        ...skin,
+        image: `https://cdngarenanow-a.akamaihd.net/webmain/static/pss/lol/items_splash/${item.id.toLowerCase()}_${
+          skin.num
+        }.jpg`,
+      }));
+
+      item.spells = item.spells.map((spell: any) => ({
+        ...spell,
+        image: `https://ddragon.leagueoflegends.com/cdn/11.16.1/img/spell/${spell.id}.png`,
+      }));
+
+      return {
+        id: item.id,
+        key: item.key,
+        name: item.name,
+        title: item.title,
+        info: item.info,
+        image: {
+          default: item.image.url,
+          square: item.image.square,
+        },
+        tags: item.tags,
+        skins: item.skins.map((i: any) => ({
+          name: i.name === 'default' ? 'Mặc Định' : i.name,
+          image: i.image,
+        })),
+        spells: item.spells.map((i: any) => ({
+          id: i.id,
+          name: i.name,
+          description: i.description,
+          cooldownBurn: i.cooldownBurn,
+          costBurn: i.costBurn,
+          image: i.image
+        })),
+      };
+    });
     response.send(result);
   };
 
