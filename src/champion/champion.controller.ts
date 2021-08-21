@@ -24,7 +24,7 @@ class ChampionController implements Controller {
   }
 
   private getAllChampions = async (request: Request, response: Response) => {
-    const champions = await this.champion.find().sort({ name: 1 }).select('id name tags').limit(5);
+    const champions = await this.champion.find().sort({ name: 1 }).select('id name tags key');
     const result = champions.map((champion) => ({
       ...champion.toJSON(),
       thumbnail: `${
