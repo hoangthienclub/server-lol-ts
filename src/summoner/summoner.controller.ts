@@ -22,7 +22,7 @@ class SummonerController implements Controller {
   private getAllSummoners = async (request: Request, response: Response) => {
     const result = await this.summoner.find().sort({ name: 1 });
     response.send(result);
-  };
+  }
 }
 
 export default SummonerController;

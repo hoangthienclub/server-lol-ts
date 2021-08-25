@@ -37,7 +37,7 @@ class ItemController implements Controller {
     } catch (err) {
       console.log(err);
     }
-  };
+  }
 
   private getItemId = async (request: Request, response: Response, next: NextFunction) => {
     const id = request.params.id;
@@ -68,7 +68,7 @@ class ItemController implements Controller {
     } else {
       next(new PostNotFoundException(id));
     }
-  };
+  }
 }
 
 export default ItemController;

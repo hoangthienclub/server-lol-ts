@@ -1,3 +1,1 @@
-export const championTags = [
-  "Fighter", "Tank", "Mage", "Assassin", "Support"
-]
+export const championTags = ['Fighter', 'Tank', 'Mage', 'Assassin', 'Support'];

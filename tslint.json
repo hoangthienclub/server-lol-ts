@@ -16,7 +16,11 @@
     "interface-name": [true, "never-prefix"],
     "import-name": false,
     "no-console": false,
-    "object-literal-sort-keys": false
+    "object-literal-sort-keys": false,
+    "trailing-comma": false,
+    "semicolon": false,
+    "no-shadowed-variable": false,
+    "eofline": false
   },
   "rulesDirectory": []
 }

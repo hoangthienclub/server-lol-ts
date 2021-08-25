@@ -4,13 +4,20 @@ import * as express from 'express';
 import * as mongoose from 'mongoose';
 import Controller from './interfaces/controller.interface';
 import errorMiddleware from './middleware/error.middleware';
+import * as cors from 'cors';
 
 class App {
   public app: express.Application;
 
   constructor(controllers: Controller[]) {
+    const allowedOrigins = ['http://localhost:8080'];
+
+    const options: cors.CorsOptions = {
+      origin: allowedOrigins,
+    };
     this.app = express();
-    
+    this.app.use(cors(options));
+
     this.connectToTheDatabase();
     this.initializeMiddlewares();
     this.initializeControllers(controllers);
@@ -28,7 +35,7 @@ class App {
   }
 
   private initializeMiddlewares() {
-    this.app.use(express.static('public'))
+    this.app.use(express.static('public'));
     this.app.use(bodyParser.json());
     this.app.use(cookieParser());
   }
@@ -45,12 +52,20 @@ class App {
 
   private connectToTheDatabase() {
     const { MONGO_USER, MONGO_PASSWORD, MONGO_PATH } = process.env;
-    mongoose.connect(`mongodb://${MONGO_PATH}`, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false
-    });
-    // mongoose.connect(`mongodb://${MONGO_USER}:${MONGO_PASSWORD}${MONGO_PATH}`);
+    mongoose.connect(
+      'mongodb://admin:Aa123456@157.245.195.153:27017/lol?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false',
+      {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useFindAndModify: false,
+      },
+    );
+    // console.log((`mongodb://${MONGO_USER}:${MONGO_PASSWORD}${MONGO_PATH}`));
+    // mongoose.connect(`mongodb://${MONGO_USER}:${MONGO_PASSWORD}${MONGO_PATH}`, {
+    //   useNewUrlParser: true,
+    //   useUnifiedTopology: true,
+    //   useFindAndModify: false
+    // });
   }
 }
 

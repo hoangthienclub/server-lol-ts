@@ -7,6 +7,7 @@ import UserController from './user/user.controller';
 import ChampionController from './champion/champion.controller';
 import ItemController from './item/item.controller';
 import SummonerController from './summoner/summoner.controller';
+import GuideController from './guide/guide.controller';
 import validateEnv from './utils/validateEnv';
 
 validateEnv();
@@ -20,6 +21,7 @@ const app = new App(
     new ChampionController(),
     new ItemController(),
     new SummonerController(),
+    new GuideController(),
   ],
 );
 

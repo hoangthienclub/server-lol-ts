@@ -13,7 +13,6 @@ const championSchema = new mongoose.Schema({
   tags: Object,
   partype: String,
   stats: Object,
-  
   allytips: Object,
   enemytips: Object,
   lore: String,

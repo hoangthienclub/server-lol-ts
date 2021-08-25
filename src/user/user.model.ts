@@ -13,6 +13,10 @@ const userSchema = new mongoose.Schema(
     email: String,
     firstName: String,
     lastName: String,
+    role: {
+      type: Number,
+      default: 1
+    },
     password: {
       type: String,
       get: (): undefined => undefined,
