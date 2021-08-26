@@ -2,8 +2,6 @@ import { Request, Response, Router } from 'express';
 import Controller from '../interfaces/controller.interface';
 import model from './model';
 
-import * as dataRunes from '../../data/extraRuneDetails.json';
-
 class ExtraRuneDetailController implements Controller {
   public path = '/extra-rune-details';
   public router = Router();

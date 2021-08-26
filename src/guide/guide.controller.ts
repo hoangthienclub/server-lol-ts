@@ -5,8 +5,6 @@ import Controller from '../interfaces/controller.interface';
 import Champion from './summoner.interface';
 import guideModel from './guide.model';
 
-import * as data from '../../data/summoner.json';
-
 class GuideController implements Controller {
   public path = '/guides';
   public router = Router();

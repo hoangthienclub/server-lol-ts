@@ -4,8 +4,6 @@ import Controller from '../interfaces/controller.interface';
 import MainRune from './mainRune.interface';
 import MainRuneModel from './mainRune.model';
 
-import * as dataRunes from '../../data/runes.json';
-
 class SummonerController implements Controller {
   public path = '/main-runes';
   public router = Router();

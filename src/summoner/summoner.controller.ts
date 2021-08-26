@@ -4,8 +4,6 @@ import Controller from '../interfaces/controller.interface';
 import Champion from './summoner.interface';
 import summonerModel from './summoner.model';
 
-import * as data from '../../data/summoner.json';
-
 class SummonerController implements Controller {
   public path = '/summoners';
   public router = Router();

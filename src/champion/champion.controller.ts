@@ -7,8 +7,6 @@ import validationMiddleware from '../middleware/validation.middleware';
 import Champion from './champion.interface';
 import championModel from './champion.model';
 
-import * as data from '../../data/championDetail.json';
-
 class ChampionController implements Controller {
   public path = '/champions';
   public router = Router();

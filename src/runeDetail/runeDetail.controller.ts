@@ -3,8 +3,6 @@ import PostNotFoundException from '../exceptions/PostNotFoundException';
 import Controller from '../interfaces/controller.interface';
 import model from './runeDetail.model';
 
-import * as data from '../../data/runeDetails.json';
-
 class RuneDetailController implements Controller {
   public path = '/rune-details';
   public router = Router();
