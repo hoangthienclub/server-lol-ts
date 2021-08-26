@@ -2,7 +2,7 @@ node_modules
 .idea
 
 .env
-public
+# public
 publiccp
 test.js
 test1.js
