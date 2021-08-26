@@ -17,6 +17,10 @@ const guideSchema = new mongoose.Schema({
   introduce: String,
   play: Object,
   videos: Object,
+  view: {
+    type: Number,
+    default: 0
+  }
 });
 
 const guideModel = mongoose.model<Champion & mongoose.Document>('Guide', guideSchema);

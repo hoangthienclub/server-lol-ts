@@ -17,20 +17,25 @@ class GuideController implements Controller {
   private initializeRoutes() {
     this.router.get(this.path, this.getAllGuides);
     this.router.post(this.path, this.createGuide);
-
   }
 
   private getAllGuides = async (request: Request, response: Response) => {
-    const result = await this.guide.find().sort({ name: 1 });
-    response.send(result);
+    const result = await this.guide.find();
+    response.send({
+      code: 200,
+      data: result,
+    });
   };
 
   private createGuide = async (request: any, response: Response) => {
     const data: any = request.body;
     const createGuide = new this.guide(data);
     const saveGuide = await createGuide.save();
-    response.send(saveGuide);
-  }
+    response.send({
+      code: 200,
+      data: saveGuide,
+    });
+  };
 }
 
 export default GuideController;
