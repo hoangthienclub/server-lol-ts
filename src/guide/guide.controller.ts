@@ -380,7 +380,7 @@ class GuideController implements Controller {
     }));
     response.send({
       code: 200,
-      data: responseData,
+      data: responseData[0],
     });
   };
 
