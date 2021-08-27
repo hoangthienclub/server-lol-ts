@@ -8,7 +8,10 @@ const guideSchema = new mongoose.Schema({
   },
   championId: Number,
   name: String,
-  path: String,
+  path: {
+    type: String,
+    unique: true
+  },
   items: Object,
   summoners: Object,
   runes: Object,
