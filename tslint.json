@@ -20,7 +20,8 @@
     "trailing-comma": false,
     "semicolon": false,
     "no-shadowed-variable": false,
-    "eofline": false
+    "eofline": false,
+    "ter-arrow-parens": false
   },
   "rulesDirectory": []
 }
