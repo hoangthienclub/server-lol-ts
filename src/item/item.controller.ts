@@ -2,6 +2,7 @@ import { Request, Response, NextFunction, Router } from 'express';
 import PostNotFoundException from '../exceptions/PostNotFoundException';
 import Controller from '../interfaces/controller.interface';
 import itemModel from './item.model';
+import * as constants from '../utils/constant';
 
 class ItemController implements Controller {
   public path = '/items';
@@ -32,12 +33,40 @@ class ItemController implements Controller {
           $sort: { id: 1 },
         },
       ]);
-
-      response.send(result);
+      const responseData = result.map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        description: item.description,
+        plaintext: item.plaintext,
+        image: `${constants.URL_IMAGE_ITEM}/${item.image.full}`,
+        gold: {
+          total: item.gold.total,
+          sell: item.gold.sell,
+        },
+        tags: item.tags,
+        from:
+          item.from && item.from.length > 0
+            ? item.from.map((i: any) => ({
+                id: i.id,
+                image: `${constants.URL_IMAGE_ITEM}/${i.image.full}`,
+                from:
+                  i.from && i.from.length > 0
+                    ? i.from.map((j: any) => ({
+                        id: j,
+                        image: `${constants.URL_IMAGE_ITEM}/${j}.png`,
+                      }))
+                    : [],
+              }))
+            : [],
+      }));
+      response.send({
+        code: 200,
+        data: responseData,
+      });
     } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   private getItemId = async (request: Request, response: Response, next: NextFunction) => {
     const id = request.params.id;
@@ -68,7 +97,7 @@ class ItemController implements Controller {
     } else {
       next(new PostNotFoundException(id));
     }
-  }
+  };
 }
 
 export default ItemController;

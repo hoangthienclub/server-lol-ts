@@ -21,7 +21,9 @@
     "semicolon": false,
     "no-shadowed-variable": false,
     "eofline": false,
-    "ter-arrow-parens": false
+    "ter-arrow-parens": false,
+    "object-shorthand-properties-first": false,
+    "ter-indent": false
   },
   "rulesDirectory": []
 }
