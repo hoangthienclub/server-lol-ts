@@ -4,7 +4,7 @@ import Champion from './champion.interface';
 const championSchema = new mongoose.Schema({
   version: String,
   id: String,
-  key: String,
+  key: Number,
   name: String,
   title: String,
   blurb: String,

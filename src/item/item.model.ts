@@ -3,7 +3,7 @@ import Item from './item.interface';
 
 const itemSchema = new mongoose.Schema({
   version: String,
-  id: String,
+  id: Number,
   name: String,
   description: String,
   colloq: String,

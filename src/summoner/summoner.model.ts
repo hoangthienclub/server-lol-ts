@@ -16,7 +16,7 @@ const summonerSchema = new mongoose.Schema({
   effect: Object,
   effectBurn: Object,
   vars: Object,
-  key: String,
+  key: Number,
   summonerLevel: Number,
   modes: Object,
   costType: String,
