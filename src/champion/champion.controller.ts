@@ -23,50 +23,25 @@ class ChampionController implements Controller {
   }
 
   private getAllChampions = async (request: Request, response: Response) => {
-    const champions = await this.champion.find().sort({ name: 1 });
+    const champions = await this.champion.find().select('id key name title image tags ').sort({ name: 1 });
     const result = champions.map((champion) => {
       const item: any = champion.toJSON();
-      item.image.url = `${constants.URL_IMAGE_CHAMPION}/${item.id}_0.jpg`;
-      item.image.square = `${constants.URL_IMAGE_CHAMPION_SQUARE}/${item.id}.png`;
-
-      item.skins = item.skins.map((skin: any) => ({
-        ...skin,
-        image: `${constants.URL_IMAGE_CHAMPION_SPLASH}/${item.id}_${
-          skin.num
-        }.jpg`,
-      }));
-
-      item.spells = item.spells.map((spell: any) => ({
-        ...spell,
-        image: `${constants.URL_IMAGE_CHAMPION_SPELL}/${spell.id}.png`,
-      }));
-
       return {
         id: item.id,
         key: item.key,
         name: item.name,
         title: item.title,
-        info: item.info,
         image: {
-          default: item.image.url,
-          square: item.image.square,
+          url: `${constants.URL_IMAGE_CHAMPION}/${item.id}_0.jpg`,
+          square: `${constants.URL_IMAGE_CHAMPION_SQUARE}/${item.id}.png`,
         },
         tags: item.tags,
-        skins: item.skins.map((i: any) => ({
-          name: i.name === 'default' ? 'Mặc Định' : i.name,
-          image: i.image,
-        })),
-        spells: item.spells.map((i: any) => ({
-          id: i.id,
-          name: i.name,
-          description: i.description,
-          cooldownBurn: i.cooldownBurn,
-          costBurn: i.costBurn,
-          image: i.image
-        })),
       };
     });
-    response.send(result);
+    response.send({
+      code: 200,
+      data: result
+    });
   };
 
   private getChampionId = async (request: Request, response: Response, next: NextFunction) => {
