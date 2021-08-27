@@ -4,12 +4,7 @@ import Controller from '../interfaces/controller.interface';
 // import authMiddleware from '../middleware/auth.middleware';
 import Champion from './summoner.interface';
 import guideModel from './guide.model';
-import {
-  URL_IMAGE_SUMMONER,
-  URL_IMAGE_ITEM,
-  URL_IMAGE_RUNE,
-  URL_IMAGE_EXTRA_RUNE,
-} from '../utils/constant';
+import * as constants from '../utils/constant';
 
 class GuideController implements Controller {
   public path = '/guides';
@@ -79,6 +74,7 @@ class GuideController implements Controller {
         $group: {
           _id: {
             view: '$view',
+            skills: '$skills',
             name: '$name',
             path: '$path',
             championId: '$championId',
@@ -98,6 +94,7 @@ class GuideController implements Controller {
         $project: {
           _id: 0,
           view: '$_id.view',
+          skills: '$_id.skills',
           name: '$_id.name',
           path: '$_id.path',
           championId: '$_id.championId',
@@ -125,6 +122,7 @@ class GuideController implements Controller {
         $group: {
           _id: {
             view: '$view',
+            skills: '$skills',
             name: '$name',
             path: '$path',
             championId: '$championId',
@@ -144,6 +142,7 @@ class GuideController implements Controller {
         $project: {
           _id: 0,
           view: '$_id.view',
+          skills: '$_id.skills',
           name: '$_id.name',
           path: '$_id.path',
           championId: '$_id.championId',
@@ -180,6 +179,7 @@ class GuideController implements Controller {
       {
         $project: {
           view: 1,
+          skills: 1,
           name: 1,
           path: 1,
           championId: 1,
@@ -195,7 +195,7 @@ class GuideController implements Controller {
               id: '$runes.primary.id.id',
               name: '$runes.primary.id.name',
               image: {
-                $concat: [URL_IMAGE_RUNE, '/', '$runes.primary.id.icon'],
+                $concat: [constants.URL_IMAGE_RUNE, '/', '$runes.primary.id.icon'],
               },
               data: '$runes.primary.data',
             },
@@ -203,7 +203,7 @@ class GuideController implements Controller {
               id: '$runes.sub1.id.id',
               name: '$runes.sub1.id.name',
               image: {
-                $concat: [URL_IMAGE_RUNE, '/', '$runes.sub1.id.icon'],
+                $concat: [constants.URL_IMAGE_RUNE, '/', '$runes.sub1.id.icon'],
               },
               data: '$runes.sub1.data',
             },
@@ -241,6 +241,7 @@ class GuideController implements Controller {
         $group: {
           _id: {
             view: '$view',
+            skills: '$skills',
             name: '$name',
             path: '$path',
             championId: '$championId',
@@ -260,6 +261,7 @@ class GuideController implements Controller {
         $project: {
           _id: 0,
           view: '$_id.view',
+          skills: '$_id.skills',
           name: '$_id.name',
           path: '$_id.path',
           championId: '$_id.championId',
@@ -272,6 +274,41 @@ class GuideController implements Controller {
           runes: '$runes',
         },
       },
+      {
+        $lookup: {
+          from: 'champions',
+          localField: 'championId',
+          foreignField: 'key',
+          as: 'champion',
+        },
+      },
+      { $unwind: '$champion' },
+      {
+        $project: {
+          view: 1,
+          skills: 1,
+          name: 1,
+          path: 1,
+          summoners: 1,
+          items: 1,
+          position: 1,
+          introduce: 1,
+          play: 1,
+          videos: 1,
+          runes: 1,
+          champion: {
+            id: '$champion.id',
+            key: '$champion.key',
+            name: '$champion.name',
+            tags: '$champion.tags',
+            allytips: '$champion.allytips',
+            enemytips: '$champion.enemytips',
+            lore: '$champion.lore',
+            passive: '$champion.passive',
+            spells: '$champion.spells',
+          },
+        },
+      },
     ]);
     const responseData: any = result.map((item: any) => ({
       ...item,
@@ -280,7 +317,7 @@ class GuideController implements Controller {
         data: data.map(({ id, name, description, image }: any) => ({
           name,
           description,
-          image: `${URL_IMAGE_SUMMONER}/${image.full}`,
+          image: `${constants.URL_IMAGE_SUMMONER}/${image.full}`,
         })),
       })),
       items: item.items.map(({ data, index }: any) => ({
@@ -288,7 +325,7 @@ class GuideController implements Controller {
         data: data.map(({ id, name, description, image }: any) => ({
           name,
           description,
-          image: `${URL_IMAGE_ITEM}/${image.full}`,
+          image: `${constants.URL_IMAGE_ITEM}/${image.full}`,
         })),
       })),
       runes: item.runes.map(({ index, primary, sub1, sub2 }: any) => ({
@@ -300,7 +337,7 @@ class GuideController implements Controller {
           data: primary.data.map(({ id, name, icon }: any) => ({
             id,
             name,
-            image: `${URL_IMAGE_RUNE}/${icon}`,
+            image: `${constants.URL_IMAGE_RUNE}/${icon}`,
           })),
         },
         sub1: {
@@ -310,17 +347,36 @@ class GuideController implements Controller {
           data: primary.data.map(({ id, name, icon }: any) => ({
             id,
             name,
-            image: `${URL_IMAGE_RUNE}/${icon}`,
+            image: `${constants.URL_IMAGE_RUNE}/${icon}`,
           })),
         },
         sub2: {
           data: sub2.data.map(({ id, name }: any) => ({
             id,
             name,
-            image: `${URL_IMAGE_EXTRA_RUNE}/${id}.png`,
+            image: `${constants.URL_IMAGE_EXTRA_RUNE}/${id}.png`,
           })),
         },
       })),
+      champion: {
+        ...item.champion,
+        image: {
+          url: `${constants.URL_IMAGE_CHAMPION}/${item.champion.id}_0.jpg`,
+          square: `${constants.URL_IMAGE_CHAMPION_SPELL}/${item.champion.id}.png`
+        },
+        passive: {
+          name: item.champion.passive.name,
+          description: item.champion.passive.description,
+          image: `${constants.URL_IMAGE_CHAMPION_PASSIVE}/${item.champion.passive.image.full}`
+        },
+        spells: item.champion.spells.map((spell: any) => ({
+          id: spell.id,
+          name: spell.name,
+          description: spell.description,
+          image: `${constants.URL_IMAGE_CHAMPION_SPELL}/${spell.id}.png`,
+        }))
+      }
+
     }));
     response.send({
       code: 200,

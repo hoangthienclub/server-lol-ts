@@ -6,6 +6,7 @@ import authMiddleware from '../middleware/auth.middleware';
 import validationMiddleware from '../middleware/validation.middleware';
 import Champion from './champion.interface';
 import championModel from './champion.model';
+import * as constants from '../utils/constant';
 
 class ChampionController implements Controller {
   public path = '/champions';
@@ -25,19 +26,19 @@ class ChampionController implements Controller {
     const champions = await this.champion.find().sort({ name: 1 });
     const result = champions.map((champion) => {
       const item: any = champion.toJSON();
-      item.image.url = `https://cdngarenanow-a.akamaihd.net/games/lol/2020/LOLwebsite/champion/${item.id}_0.jpg`;
-      item.image.square = `http://ddragon.leagueoflegends.com/cdn/11.16.1/img/champion/${item.id}.png`;
+      item.image.url = `${constants.URL_IMAGE_CHAMPION}/${item.id}_0.jpg`;
+      item.image.square = `${constants.URL_IMAGE_CHAMPION_SQUARE}/${item.id}.png`;
 
       item.skins = item.skins.map((skin: any) => ({
         ...skin,
-        image: `https://cdngarenanow-a.akamaihd.net/webmain/static/pss/lol/items_splash/${item.id.toLowerCase()}_${
+        image: `${constants.URL_IMAGE_CHAMPION_SPLASH}/${item.id}_${
           skin.num
         }.jpg`,
       }));
 
       item.spells = item.spells.map((spell: any) => ({
         ...spell,
-        image: `https://ddragon.leagueoflegends.com/cdn/11.16.1/img/spell/${spell.id}.png`,
+        image: `${constants.URL_IMAGE_CHAMPION_SPELL}/${spell.id}.png`,
       }));
 
       return {
@@ -76,24 +77,17 @@ class ChampionController implements Controller {
 
     if (post) {
       const result = post.toJSON();
-      result.image.url = `${
-        process.env.SERVER_URL
-      }/images/champions/${result.id.toLowerCase()}/images/${result.id.toLowerCase()}_0.jpg`;
+      result.image.url = `${constants.URL_IMAGE_SUMMONER}/${result.id}_0.jpg`;
 
       result.skins = result.skins.map((skin: any) => ({
         ...skin,
-        image: `${
-          process.env.SERVER_URL
-        }/images/champions/${result.id.toLowerCase()}/skins/${skin.num}.jpg`,
+        image: `${constants.URL_IMAGE_CHAMPION_SPLASH}/${result.id}_${
+          skin.num
+        }.jpg`
       }));
       result.spells = result.spells.map((spell: any) => ({
         ...spell,
-        image: `${
-          process.env.SERVER_URL
-        }/images/champions/${result.id.toLowerCase()}/skills/images/${spell.id}.png`,
-        video: `${
-          process.env.SERVER_URL
-        }/images/champions/${result.id.toLowerCase()}/skills/videos/${spell.id}.mp4`,
+        image: `${constants.URL_IMAGE_CHAMPION_SPELL}/${spell.id}.png`,
       }));
       response.send(result);
     } else {
