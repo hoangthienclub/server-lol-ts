@@ -19,10 +19,14 @@ class GuideController implements Controller {
     this.router.get(this.path, this.getAllGuides);
     this.router.post(this.path, authMiddleware, this.createGuide);
     this.router.get(`${this.path}/:path`, this.getByPath);
+    this.router.delete(`${this.path}/:id`, authMiddleware, this.deleteGuide);
   }
 
   private getAllGuides = async (request: Request, response: Response) => {
     const result = await this.guide.aggregate([
+      {
+        $match: { expiredAt: { $exists: false } },
+      },
       {
         $lookup: {
           from: 'champions',
@@ -32,7 +36,7 @@ class GuideController implements Controller {
         },
       },
       {
-        $unwind: '$champion',
+        $unwind: { path: '$champion', preserveNullAndEmptyArrays: true },
       },
       {
         $project: {
@@ -322,7 +326,7 @@ class GuideController implements Controller {
           description,
           image: `${constants.URL_IMAGE_SUMMONER}/${image.full}`,
         })),
-        title
+        title,
       })),
       items: item.items.map(({ data, index, title }: any) => ({
         index,
@@ -331,7 +335,7 @@ class GuideController implements Controller {
           description,
           image: `${constants.URL_IMAGE_ITEM}/${image.full}`,
         })),
-        title
+        title,
       })),
       runes: item.runes.map(({ index, primary, sub1, sub2, title }: any) => ({
         index,
@@ -344,7 +348,7 @@ class GuideController implements Controller {
             name,
             image: `${constants.URL_IMAGE_RUNE}/${icon}`,
           })),
-          color: primary.color
+          color: primary.color,
         },
         sub1: {
           id: sub1.id,
@@ -355,37 +359,36 @@ class GuideController implements Controller {
             name,
             image: `${constants.URL_IMAGE_RUNE}/${icon}`,
           })),
-          color: sub1.color
+          color: sub1.color,
         },
         sub2: {
           data: sub2.data.map(({ id, name, color }: any) => ({
             id,
             name,
             image: `${constants.URL_IMAGE_EXTRA_RUNE}/${id}.png`,
-            color
+            color,
           })),
         },
-        title
+        title,
       })),
       champion: {
         ...item.champion,
         image: {
           url: `${constants.URL_IMAGE_CHAMPION}/${item.champion.id}_0.jpg`,
-          square: `${constants.URL_IMAGE_CHAMPION_SPELL}/${item.champion.id}.png`
+          square: `${constants.URL_IMAGE_CHAMPION_SPELL}/${item.champion.id}.png`,
         },
         passive: {
           name: item.champion.passive.name,
           description: item.champion.passive.description,
-          image: `${constants.URL_IMAGE_CHAMPION_PASSIVE}/${item.champion.passive.image.full}`
+          image: `${constants.URL_IMAGE_CHAMPION_PASSIVE}/${item.champion.passive.image.full}`,
         },
         spells: item.champion.spells.map((spell: any) => ({
           id: spell.id,
           name: spell.name,
           description: spell.description,
           image: `${constants.URL_IMAGE_CHAMPION_SPELL}/${spell.id}.png`,
-        }))
-      }
-
+        })),
+      },
     }));
     response.send({
       code: 200,
@@ -403,6 +406,21 @@ class GuideController implements Controller {
     response.send({
       code: 200,
       data: saveGuide,
+    });
+  };
+
+  private deleteGuide = async (request: any, response: Response) => {
+    const id = request.params.id;
+    await this.guide.updateOne(
+      {
+        _id: id,
+      },
+      { expiredAt: true },
+    );
+
+    response.send({
+      code: 200,
+      data: {},
     });
   };
 }

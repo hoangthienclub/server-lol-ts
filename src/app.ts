@@ -10,13 +10,13 @@ class App {
   public app: express.Application;
 
   constructor(controllers: Controller[]) {
-    const allowedOrigins = ['*'];
+    // const allowedOrigins = ['http://localhost:3000'];
 
-    const options: cors.CorsOptions = {
-      origin: allowedOrigins,
-    };
+    // const options: cors.CorsOptions = {
+    //   origin: true,
+    // };
     this.app = express();
-    this.app.use(cors(options));
+    this.app.use(cors());
 
     this.connectToTheDatabase();
     this.initializeMiddlewares();
