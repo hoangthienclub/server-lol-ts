@@ -315,13 +315,14 @@ class GuideController implements Controller {
     ]);
     const responseData: any = result.map((item: any) => ({
       ...item,
-      summoners: item.summoners.map(({ data, index }: any) => ({
+      summoners: item.summoners.map(({ data, index, title }: any) => ({
         index,
         data: data.map(({ id, name, description, image }: any) => ({
           name,
           description,
           image: `${constants.URL_IMAGE_SUMMONER}/${image.full}`,
         })),
+        title
       })),
       items: item.items.map(({ data, index, title }: any) => ({
         index,
