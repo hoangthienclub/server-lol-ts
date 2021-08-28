@@ -199,6 +199,7 @@ class GuideController implements Controller {
                 $concat: [constants.URL_IMAGE_RUNE, '/', '$runes.primary.id.icon'],
               },
               data: '$runes.primary.data',
+              color: '$runes.primary.id.color',
             },
             sub1: {
               id: '$runes.sub1.id.id',
@@ -207,6 +208,7 @@ class GuideController implements Controller {
                 $concat: [constants.URL_IMAGE_RUNE, '/', '$runes.sub1.id.icon'],
               },
               data: '$runes.sub1.data',
+              color: '$runes.sub1.id.color',
             },
             sub2: {
               data: '$runes.sub2.data',
@@ -341,6 +343,7 @@ class GuideController implements Controller {
             name,
             image: `${constants.URL_IMAGE_RUNE}/${icon}`,
           })),
+          color: primary.color
         },
         sub1: {
           id: sub1.id,
@@ -351,12 +354,14 @@ class GuideController implements Controller {
             name,
             image: `${constants.URL_IMAGE_RUNE}/${icon}`,
           })),
+          color: primary.color
         },
         sub2: {
-          data: sub2.data.map(({ id, name }: any) => ({
+          data: sub2.data.map(({ id, name, color }: any) => ({
             id,
             name,
             image: `${constants.URL_IMAGE_EXTRA_RUNE}/${id}.png`,
+            color
           })),
         },
         title
