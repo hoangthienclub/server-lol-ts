@@ -67,7 +67,7 @@ class ChampionController implements Controller {
         lore: r.lore,
         passive: {
           name: r.passive.name,
-          description: r.passive.description,
+          description: r.passive.description.replace('<physicalDamage>', '').replace('</physicalDamage>', ''),
           image: `${constants.URL_IMAGE_CHAMPION_PASSIVE}/${r.passive.image.full}`,
         },
         spells: r.spells.map((spell: any) => ({
