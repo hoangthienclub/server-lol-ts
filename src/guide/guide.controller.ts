@@ -349,7 +349,7 @@ class GuideController implements Controller {
           id: sub1.id,
           name: sub1.name,
           image: sub1.image,
-          data: primary.data.map(({ id, name, icon }: any) => ({
+          data: sub1.data.map(({ id, name, icon }: any) => ({
             id,
             name,
             image: `${constants.URL_IMAGE_RUNE}/${icon}`,
