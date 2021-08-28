@@ -75,6 +75,7 @@ class ChampionController implements Controller {
           name: spell.name,
           description: spell.description,
           image: `${constants.URL_IMAGE_CHAMPION_SPELL}/${spell.id}.png`,
+          cooldownBurn: spell.cooldownBurn
         })),
         Skins: r.skins.map((skin: any) => ({
           ...skin,
