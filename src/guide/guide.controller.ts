@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction, Router } from 'express';
 import PostNotFoundException from '../exceptions/PostNotFoundException';
 import Controller from '../interfaces/controller.interface';
-// import authMiddleware from '../middleware/auth.middleware';
+import authMiddleware from '../middleware/auth.middleware';
 import Champion from './summoner.interface';
 import guideModel from './guide.model';
 import * as constants from '../utils/constant';
@@ -17,7 +17,7 @@ class GuideController implements Controller {
 
   private initializeRoutes() {
     this.router.get(this.path, this.getAllGuides);
-    this.router.post(this.path, this.createGuide);
+    this.router.post(this.path, authMiddleware, this.createGuide);
     this.router.get(`${this.path}/:path`, this.getByPath);
   }
 
@@ -354,7 +354,7 @@ class GuideController implements Controller {
             name,
             image: `${constants.URL_IMAGE_RUNE}/${icon}`,
           })),
-          color: primary.color
+          color: sub1.color
         },
         sub2: {
           data: sub2.data.map(({ id, name, color }: any) => ({
@@ -393,13 +393,17 @@ class GuideController implements Controller {
   };
 
   private createGuide = async (request: any, response: Response) => {
-    const data: any = request.body;
-    const createGuide = new this.guide(data);
-    const saveGuide = await createGuide.save();
-    response.send({
-      code: 200,
-      data: saveGuide,
-    });
+    // if
+    // console.log('thien')
+    //   console.log(request.user)
+    // // const data: any = request.body;
+    // // const createGuide = new this.guide(data);
+    // // const saveGuide = await createGuide.save();
+    // response.send({
+    //   code: 200,
+    //   data: null,
+    //   // data: saveGuide,
+    // });
   };
 }
 
