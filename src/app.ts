@@ -10,7 +10,7 @@ class App {
   public app: express.Application;
 
   constructor(controllers: Controller[]) {
-    const allowedOrigins = ['http://localhost:3000'];
+    const allowedOrigins = ['*'];
 
     const options: cors.CorsOptions = {
       origin: allowedOrigins,

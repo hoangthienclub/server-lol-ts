@@ -23,7 +23,11 @@ const guideSchema = new mongoose.Schema({
   view: {
     type: Number,
     default: 0
-  }
+  },
+  author: {
+    ref: 'User',
+    type: mongoose.Schema.Types.ObjectId,
+  },
 });
 
 const guideModel = mongoose.model<Champion & mongoose.Document>('Guide', guideSchema);

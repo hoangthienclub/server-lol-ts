@@ -393,17 +393,16 @@ class GuideController implements Controller {
   };
 
   private createGuide = async (request: any, response: Response) => {
-    // if
-    // console.log('thien')
-    //   console.log(request.user)
-    // // const data: any = request.body;
-    // // const createGuide = new this.guide(data);
-    // // const saveGuide = await createGuide.save();
-    // response.send({
-    //   code: 200,
-    //   data: null,
-    //   // data: saveGuide,
-    // });
+    const data: any = request.body;
+    const createGuide = new this.guide({
+      ...data,
+      author: request.user._id,
+    });
+    const saveGuide = await createGuide.save();
+    response.send({
+      code: 200,
+      data: saveGuide,
+    });
   };
 }
 
