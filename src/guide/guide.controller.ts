@@ -191,6 +191,7 @@ class GuideController implements Controller {
           items: 1,
           runes: {
             index: 1,
+            title: 1,
             primary: {
               id: '$runes.primary.id.id',
               name: '$runes.primary.id.name',
@@ -320,15 +321,16 @@ class GuideController implements Controller {
           image: `${constants.URL_IMAGE_SUMMONER}/${image.full}`,
         })),
       })),
-      items: item.items.map(({ data, index }: any) => ({
+      items: item.items.map(({ data, index, title }: any) => ({
         index,
         data: data.map(({ id, name, description, image }: any) => ({
           name,
           description,
           image: `${constants.URL_IMAGE_ITEM}/${image.full}`,
         })),
+        title
       })),
-      runes: item.runes.map(({ index, primary, sub1, sub2 }: any) => ({
+      runes: item.runes.map(({ index, primary, sub1, sub2, title }: any) => ({
         index,
         primary: {
           id: primary.id,
@@ -357,6 +359,7 @@ class GuideController implements Controller {
             image: `${constants.URL_IMAGE_EXTRA_RUNE}/${id}.png`,
           })),
         },
+        title
       })),
       champion: {
         ...item.champion,
