@@ -12,6 +12,7 @@ import MainRuneController from './mainRune/mainRune.controller';
 import runeDetailController from './runeDetail/runeDetail.controller';
 import extraRuneController from './extraRune/controller';
 import extraRuneDetailController from './extraRuneDetail/controller';
+import garenaController from './garena/garena.controller';
 import validateEnv from './utils/validateEnv';
 
 validateEnv();
@@ -30,6 +31,7 @@ const app = new App(
     new runeDetailController(),
     new extraRuneController(),
     new extraRuneDetailController(),
+    new garenaController(),
   ],
 );
 
