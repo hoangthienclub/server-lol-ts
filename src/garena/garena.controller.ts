@@ -54,18 +54,25 @@ class HistoryController implements Controller {
   };
 
   private getHitoriesByAccount = async (request: Request, response: Response) => {
-    const name = request.query.name;
-    const account: any = await axios.get(`${constants.urlGarena}/players?name=${name}&region=VN`);
-    const accountId = account.data.accountId;
-    const begIndex = request.query.begIndex;
-    const endIndex = request.query.endIndex;
-    const histories = await axios.get(
-      `${constants.urlGarena}/stats/player_history/VN/${accountId}?begIndex=${begIndex}&endIndex=${endIndex}`,
-    );
-    response.send({
-      code: 200,
-      data: histories.data,
-    });
+    try {
+      const name = request.query.name;
+      const account: any = await axios.get(`${constants.urlGarena}/players?name=${name}&region=VN`);
+      const accountId = account.data.accountId;
+      const begIndex = request.query.begIndex;
+      const endIndex = request.query.endIndex;
+      const histories = await axios.get(
+        `${constants.urlGarena}/stats/player_history/VN/${accountId}?begIndex=${begIndex}&endIndex=${endIndex}`,
+      );
+      response.send({
+        code: 200,
+        data: histories.data,
+      });
+    } catch (err) {
+      response.send({
+        code: 200,
+        data: {},
+      });
+    }
   };
 }
 
