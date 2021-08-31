@@ -47,6 +47,9 @@ class GuideController implements Controller {
           champion: {
             id: '$champion.key',
             name: '$champion.name',
+            url: {
+              $concat: [constants.URL_IMAGE_CHAMPION_SPLASH, '/', '$champion.id', '_0.jpg']
+            }
           },
         },
       },
