@@ -42,6 +42,7 @@ class GuideController implements Controller {
         $project: {
           _id: 1,
           view: 1,
+          description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type spec",
           name: 1,
           path: 1,
           champion: {
@@ -322,6 +323,7 @@ class GuideController implements Controller {
     ]);
     const responseData: any = result.map((item: any) => ({
       ...item,
+      description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type spec",
       summoners: item.summoners.map(({ data, index, title }: any) => ({
         index,
         data: data.map(({ id, name, description, image }: any) => ({
@@ -377,8 +379,8 @@ class GuideController implements Controller {
       champion: {
         ...item.champion,
         image: {
-          url: `${constants.URL_IMAGE_CHAMPION}/${item.champion.id}_0.jpg`,
-          square: `${constants.URL_IMAGE_CHAMPION_SPELL}/${item.champion.id}.png`,
+          url: `${constants.URL_IMAGE_CHAMPION_SPLASH}/${item.champion.id}_0.jpg`,
+          square: `${constants.URL_IMAGE_CHAMPION_SQUARE}/${item.champion.id}.png`,
         },
         passive: {
           name: item.champion.passive.name,

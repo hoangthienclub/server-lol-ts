@@ -53,7 +53,7 @@ class ChampionController implements Controller {
 
     if (post) {
       const r = post.toJSON();
-      const guides = await this.guide.find({ championId: r.key }).select('path');
+      const guides = await this.guide.find({ championId: r.key }).select('path name description');
       const responseData = {
         id: r.id,
         key: r.key,
@@ -81,7 +81,10 @@ class ChampionController implements Controller {
           ...skin,
           image: `${constants.URL_IMAGE_CHAMPION_SPLASH}/${r.id}_${skin.num}.jpg`,
         })),
-        guides,
+        guides: guides.map(i => ({
+          ...i.toJSON(),
+          description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type spec",
+        })),
       };
       response.send({
         code: 200,
