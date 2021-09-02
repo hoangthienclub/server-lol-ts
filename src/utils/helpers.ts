@@ -19,8 +19,8 @@ export const replaceAll = (str: string, find: string, replace: string) => {
 
 export const prepareData = (data: string) => {
   getAllIndexes(data, `${constants.URL_SERVER}/temp-files/`)
-    .map((i) => data.substr(i + 39, 17))
-    .map((i) => {
+    .map((i: any) => data.substr(i + 39, 17))
+    .map((i: any) => {
       fs.renameSync(`public/temp-files/${i}`, `public/image-guides/${i}`);
       return i;
     });
