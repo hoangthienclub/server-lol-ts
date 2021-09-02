@@ -20,6 +20,7 @@ class GuideController implements Controller {
     this.router.get(this.path, this.getAllGuides);
     this.router.post(this.path, authMiddleware, this.createGuide);
     this.router.get(`${this.path}/:path`, this.getByPath);
+    this.router.get(`${this.path}/detail/:id`, this.getById);
     this.router.delete(`${this.path}/:id`, authMiddleware, this.deleteGuide);
   }
 
@@ -429,6 +430,16 @@ class GuideController implements Controller {
     response.send({
       code: 200,
       data: {},
+    });
+  };
+
+  private getById = async (request: any, response: Response) => {
+    const id = request.params.id;
+    const result = await this.guide.findById(id);
+
+    response.send({
+      code: 200,
+      data: result
     });
   };
 }
