@@ -21,10 +21,13 @@ class ChampionController implements Controller {
   }
 
   private getAllChampions = async (request: Request, response: Response) => {
+    const { limit, offset } = request.query;
     const champions = await this.champion
       .find()
       .select('id key name title image tags ')
-      .sort({ name: 1 });
+      .sort({ name: 1 })
+      .limit(+limit)
+      .skip(+offset)
     const result = champions.map((champion) => {
       const item: any = champion.toJSON();
       return {
