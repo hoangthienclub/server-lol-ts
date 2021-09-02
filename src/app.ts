@@ -5,6 +5,7 @@ import * as mongoose from 'mongoose';
 import Controller from './interfaces/controller.interface';
 import errorMiddleware from './middleware/error.middleware';
 import * as cors from 'cors';
+import * as fileUpload from 'express-fileupload';
 
 class App {
   public app: express.Application;
@@ -17,6 +18,8 @@ class App {
     // };
     this.app = express();
     this.app.use(cors());
+
+    this.app.use(fileUpload({}));
 
     this.connectToTheDatabase();
     this.initializeMiddlewares();

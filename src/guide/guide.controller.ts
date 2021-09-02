@@ -5,6 +5,7 @@ import authMiddleware from '../middleware/auth.middleware';
 import Champion from './summoner.interface';
 import guideModel from './guide.model';
 import * as constants from '../utils/constant';
+import { prepareData } from '../utils/helpers';
 
 class GuideController implements Controller {
   public path = '/guides';
@@ -403,6 +404,8 @@ class GuideController implements Controller {
 
   private createGuide = async (request: any, response: Response) => {
     const data: any = request.body;
+    data.guide = prepareData(data.guide);
+    data.introduce = prepareData(data.introduce);
     const createGuide = new this.guide({
       ...data,
       author: request.user._id,

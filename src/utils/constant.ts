@@ -13,3 +13,4 @@ export const ROLES = {
 };
 
 export const urlGarena = 'https://acs-garena.leagueoflegends.com/v1';
+export const URL_SERVER = 'https://api.thuvienmoba.com'

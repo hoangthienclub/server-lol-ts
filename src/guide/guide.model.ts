@@ -19,8 +19,9 @@ const guideSchema = new mongoose.Schema(
     position: Number,
     skills: Object,
     introduce: String,
-    play: Object,
+    guide: Object,
     videos: Object,
+    championCouters: Object,
     view: {
       type: Number,
       default: 0,

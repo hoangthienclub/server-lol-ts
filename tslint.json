@@ -23,7 +23,9 @@
     "eofline": false,
     "ter-arrow-parens": false,
     "object-shorthand-properties-first": false,
-    "ter-indent": false
+    "ter-indent": false,
+    "no-conditional-assignment": false,
+    "triple-equals": false
   },
   "rulesDirectory": []
 }
