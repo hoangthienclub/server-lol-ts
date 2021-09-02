@@ -58,16 +58,19 @@ class GuideController implements Controller {
           },
         },
       },
-      { $limit: +limit + (+offset) },
+      { $limit: +limit + +offset },
       { $skip: +offset },
     ]);
     const responseData = result.map((item: any) => ({
       ...item,
-      items: item.items[0].data.map((i: any) => `${constants.URL_IMAGE_ITEM}/${i}.png`)
-    }))
+      items: item.items[0].data.map((i: any) => `${constants.URL_IMAGE_ITEM}/${i}.png`),
+    }));
     response.send({
       code: 200,
-      data: responseData,
+      data: {
+        totalItems: await this.guide.count({ expiredAt: { $exists: false } }),
+        data: responseData,
+      },
     });
   };
 
