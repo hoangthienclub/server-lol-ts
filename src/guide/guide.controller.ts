@@ -25,6 +25,7 @@ class GuideController implements Controller {
   }
 
   private getAllGuides = async (request: Request, response: Response) => {
+    const { limit = 10, offset = 0 } = request.query;
     const result = await this.guide.aggregate([
       {
         $match: { expiredAt: { $exists: false } },
@@ -44,6 +45,7 @@ class GuideController implements Controller {
         $project: {
           _id: 1,
           view: 1,
+          items: 1,
           introduce: 1,
           name: 1,
           path: 1,
@@ -51,15 +53,21 @@ class GuideController implements Controller {
             id: '$champion.key',
             name: '$champion.name',
             url: {
-              $concat: [constants.URL_IMAGE_CHAMPION_SPLASH, '/', '$champion.id', '_0.jpg']
-            }
+              $concat: [constants.URL_IMAGE_CHAMPION_SPLASH, '/', '$champion.id', '_0.jpg'],
+            },
           },
         },
       },
+      { $limit: +limit + (+offset) },
+      { $skip: +offset },
     ]);
+    const responseData = result.map((item: any) => ({
+      ...item,
+      items: item.items[0].data.map((i: any) => `${constants.URL_IMAGE_ITEM}/${i}.png`)
+    }))
     response.send({
       code: 200,
-      data: result,
+      data: responseData,
     });
   };
 
@@ -446,7 +454,7 @@ class GuideController implements Controller {
 
     response.send({
       code: 200,
-      data: result
+      data: result,
     });
   };
 }
