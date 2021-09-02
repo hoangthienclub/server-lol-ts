@@ -58,10 +58,10 @@ class HistoryController implements Controller {
         key,
         image: `${constants.URL_IMAGE_SUMMONER}/${image.full}`,
       })),
-      champions: champions.map(({ key, name, image, spells }: any) => ({
+      champions: champions.map(({ key, name, image, spells, id }: any) => ({
         key,
         name,
-        image: `${constants.URL_IMAGE_CHAMPION}/${image.full}`,
+        image: `${constants.URL_IMAGE_CHAMPION}/${id}_0.jpg`,
         spells: spells.map((item: any) => ({
           id: item.id,
           name: item.name,
