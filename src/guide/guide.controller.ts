@@ -468,7 +468,8 @@ class GuideController implements Controller {
   private updateGuide = async (request: any, response: Response) => {
     const id = request.params.id;
     const data = request.body;
-
+    data.guide = prepareData(data.guide);
+    data.introduce = prepareData(data.introduce);
     const result = await this.guide.findOneAndUpdate({ _id: id }, { $set: data }, { new: true });
 
     response.send({
