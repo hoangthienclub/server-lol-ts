@@ -44,7 +44,7 @@ class GuideController implements Controller {
         $project: {
           _id: 1,
           view: 1,
-          description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type spec",
+          introduce: 1,
           name: 1,
           path: 1,
           champion: {
@@ -92,6 +92,7 @@ class GuideController implements Controller {
             runes: '$runes',
             position: '$position',
             introduce: '$introduce',
+            guide: '$guide',
             play: '$play',
             videos: '$videos',
           },
@@ -112,6 +113,7 @@ class GuideController implements Controller {
           runes: '$_id.runes',
           position: '$_id.position',
           introduce: '$_id.introduce',
+          guide: '$_id.guide',
           play: '$_id.play',
           videos: '$_id.videos',
           summoners: '$summoners',
@@ -140,6 +142,7 @@ class GuideController implements Controller {
             runes: '$runes',
             position: '$position',
             introduce: '$introduce',
+            guide: '$guide',
             play: '$play',
             videos: '$videos',
           },
@@ -160,6 +163,7 @@ class GuideController implements Controller {
           runes: '$_id.runes',
           position: '$_id.position',
           introduce: '$_id.introduce',
+          guide: '$_id.guide',
           play: '$_id.play',
           videos: '$_id.videos',
           items: '$items',
@@ -196,6 +200,7 @@ class GuideController implements Controller {
           summoners: 1,
           position: 1,
           introduce: 1,
+          guide: 1,
           play: 1,
           videos: 1,
           items: 1,
@@ -262,6 +267,7 @@ class GuideController implements Controller {
             items: '$items',
             position: '$position',
             introduce: '$introduce',
+            guide: '$guide',
             play: '$play',
             videos: '$videos',
           },
@@ -282,6 +288,7 @@ class GuideController implements Controller {
           items: '$_id.items',
           position: '$_id.position',
           introduce: '$_id.introduce',
+          guide: '$_id.guide',
           play: '$_id.play',
           videos: '$_id.videos',
           runes: '$runes',
@@ -306,6 +313,7 @@ class GuideController implements Controller {
           items: 1,
           position: 1,
           introduce: 1,
+          guide: 1,
           play: 1,
           videos: 1,
           runes: 1,
@@ -325,7 +333,6 @@ class GuideController implements Controller {
     ]);
     const responseData: any = result.map((item: any) => ({
       ...item,
-      description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type spec",
       summoners: item.summoners.map(({ data, index, title }: any) => ({
         index,
         data: data.map(({ id, name, description, image }: any) => ({
