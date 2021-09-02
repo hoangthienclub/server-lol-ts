@@ -25,7 +25,10 @@ class GuideController implements Controller {
   }
 
   private getAllGuides = async (request: Request, response: Response) => {
-    const { limit = 10, offset = 0 } = request.query;
+    const { limit = 10, page = 1 } = request.query;
+
+    const offset = (+limit * +page) - +limit;
+
     const result = await this.guide.aggregate([
       {
         $match: { expiredAt: { $exists: false } },
@@ -58,8 +61,8 @@ class GuideController implements Controller {
           },
         },
       },
-      { $limit: +limit + +offset },
-      { $skip: +offset },
+      { $limit: +limit + offset },
+      { $skip: offset },
     ]);
     const responseData = result.map((item: any) => ({
       ...item,
