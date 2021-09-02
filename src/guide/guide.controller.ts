@@ -22,12 +22,13 @@ class GuideController implements Controller {
     this.router.get(`${this.path}/:path`, this.getByPath);
     this.router.get(`${this.path}/detail/:id`, this.getById);
     this.router.delete(`${this.path}/:id`, authMiddleware, this.deleteGuide);
+    this.router.put(`${this.path}/:id`, authMiddleware, this.updateGuide);
   }
 
   private getAllGuides = async (request: Request, response: Response) => {
     const { limit = 10, page = 1 } = request.query;
 
-    const offset = (+limit * +page) - +limit;
+    const offset = +limit * +page - +limit;
 
     const result = await this.guide.aggregate([
       {
@@ -457,6 +458,18 @@ class GuideController implements Controller {
   private getById = async (request: any, response: Response) => {
     const id = request.params.id;
     const result = await this.guide.findById(id);
+
+    response.send({
+      code: 200,
+      data: result,
+    });
+  };
+
+  private updateGuide = async (request: any, response: Response) => {
+    const id = request.params.id;
+    const data = request.body;
+
+    const result = await this.guide.findOneAndUpdate({ _id: id }, { $set: data }, { new: true });
 
     response.send({
       code: 200,
