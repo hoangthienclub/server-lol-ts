@@ -577,7 +577,7 @@ class GuideController implements Controller {
     }));
     response.send({
       code: 200,
-      data: responseData,
+      data: responseData && responseData.length > 0 ? responseData[0] : {},
     });
   };
 
