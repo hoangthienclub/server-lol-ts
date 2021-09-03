@@ -67,7 +67,9 @@ class GuideController implements Controller {
     ]);
     const responseData = result.map((item: any) => ({
       ...item,
-      items: item.items[0].data.map((i: any) => `${constants.URL_IMAGE_ITEM}/${i}.png`),
+      items: item.items
+        .sort((a: any, b: any) => a.index - b.index)
+        .map(({ id }: any) => `${constants.URL_IMAGE_ITEM}/${id}.png`),
     }));
     response.send({
       code: 200,
