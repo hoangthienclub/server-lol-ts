@@ -90,10 +90,13 @@ class GuideController implements Controller {
       {
         $lookup: {
           from: 'summoners',
-          localField: 'summoners.data',
+          localField: 'summoners.id',
           foreignField: 'key',
           as: 'summoners.data',
         },
+      },
+      {
+        $unwind: '$summoners.data',
       },
       {
         $group: {
@@ -104,7 +107,9 @@ class GuideController implements Controller {
             path: '$path',
             championId: '$championId',
             items: '$items',
-            runes: '$runes',
+            runePrimary: '$runePrimary',
+            runeSub1: '$runeSub1',
+            runeSub2: '$runeSub2',
             position: '$position',
             introduce: '$introduce',
             guide: '$guide',
@@ -125,7 +130,9 @@ class GuideController implements Controller {
           path: '$_id.path',
           championId: '$_id.championId',
           items: '$_id.items',
-          runes: '$_id.runes',
+          runePrimary: '$_id.runePrimary',
+          runeSub1: '$_id.runeSub1',
+          runeSub2: '$_id.runeSub2',
           position: '$_id.position',
           introduce: '$_id.introduce',
           guide: '$_id.guide',
@@ -140,10 +147,13 @@ class GuideController implements Controller {
       {
         $lookup: {
           from: 'items',
-          localField: 'items.data',
+          localField: 'items.id',
           foreignField: 'id',
           as: 'items.data',
         },
+      },
+      {
+        $unwind: '$items.data',
       },
       {
         $group: {
@@ -154,7 +164,9 @@ class GuideController implements Controller {
             path: '$path',
             championId: '$championId',
             summoners: '$summoners',
-            runes: '$runes',
+            runePrimary: '$runePrimary',
+            runeSub1: '$runeSub1',
+            runeSub2: '$runeSub2',
             position: '$position',
             introduce: '$introduce',
             guide: '$guide',
@@ -175,7 +187,9 @@ class GuideController implements Controller {
           path: '$_id.path',
           championId: '$_id.championId',
           summoners: '$_id.summoners',
-          runes: '$_id.runes',
+          runePrimary: '$_id.runePrimary',
+          runeSub1: '$_id.runeSub1',
+          runeSub2: '$_id.runeSub2',
           position: '$_id.position',
           introduce: '$_id.introduce',
           guide: '$_id.guide',
@@ -185,89 +199,57 @@ class GuideController implements Controller {
         },
       },
       {
-        $unwind: '$runes',
+        $unwind: '$runePrimary.data',
       },
       {
         $lookup: {
           from: 'mainrunes',
-          localField: 'runes.primary.id',
+          localField: 'runePrimary.id',
           foreignField: 'id',
-          as: 'runes.primary.id',
+          as: 'runePrimary.id',
         },
       },
       {
         $lookup: {
-          from: 'mainrunes',
-          localField: 'runes.sub1.id',
+          from: 'runedetails',
+          localField: 'runePrimary.data.id',
           foreignField: 'id',
-          as: 'runes.sub1.id',
+          as: 'runePrimary.data.id',
         },
       },
-      { $unwind: '$runes.primary.id' },
-      { $unwind: '$runes.sub1.id' },
+      {
+        $unwind: '$runePrimary.id',
+      },
+      {
+        $unwind: '$runePrimary.data.id',
+      },
       {
         $project: {
+          _id: 0,
           view: 1,
           skills: 1,
           name: 1,
           path: 1,
           championId: 1,
           summoners: 1,
+          runeSub1: 1,
+          runeSub2: 1,
           position: 1,
           introduce: 1,
           guide: 1,
           play: 1,
           videos: 1,
+          runePrimary: 1,
           items: 1,
-          runes: {
-            index: 1,
-            title: 1,
-            primary: {
-              id: '$runes.primary.id.id',
-              name: '$runes.primary.id.name',
-              image: {
-                $concat: [constants.URL_IMAGE_RUNE, '/', '$runes.primary.id.icon'],
-              },
-              data: '$runes.primary.data',
-              color: '$runes.primary.id.color',
-            },
-            sub1: {
-              id: '$runes.sub1.id.id',
-              name: '$runes.sub1.id.name',
-              image: {
-                $concat: [constants.URL_IMAGE_RUNE, '/', '$runes.sub1.id.icon'],
-              },
-              data: '$runes.sub1.data',
-              color: '$runes.sub1.id.color',
-            },
-            sub2: {
-              data: '$runes.sub2.data',
+          primary: {
+            id: '$runePrimary.id.id',
+            name: '$runePrimary.id.name',
+            color: '$runePrimary.id.color',
+            image: {
+              $concat: [constants.URL_IMAGE_RUNE, '/', '$runePrimary.id.icon'],
             },
           },
-        },
-      },
-      {
-        $lookup: {
-          from: 'runedetails',
-          localField: 'runes.primary.data',
-          foreignField: 'id',
-          as: 'runes.primary.data',
-        },
-      },
-      {
-        $lookup: {
-          from: 'runedetails',
-          localField: 'runes.sub1.data',
-          foreignField: 'id',
-          as: 'runes.sub1.data',
-        },
-      },
-      {
-        $lookup: {
-          from: 'extrarunedetails',
-          localField: 'runes.sub2.data',
-          foreignField: 'id',
-          as: 'runes.sub2.data',
+          primaryData: '$runePrimary.data',
         },
       },
       {
@@ -276,18 +258,21 @@ class GuideController implements Controller {
             view: '$view',
             skills: '$skills',
             name: '$name',
+            items: '$items',
             path: '$path',
             championId: '$championId',
             summoners: '$summoners',
-            items: '$items',
+            runeSub1: '$runeSub1',
+            runeSub2: '$runeSub2',
             position: '$position',
             introduce: '$introduce',
             guide: '$guide',
             play: '$play',
             videos: '$videos',
+            primary: '$primary',
           },
-          runes: {
-            $push: '$runes',
+          primaryData: {
+            $push: '$primaryData',
           },
         },
       },
@@ -297,16 +282,185 @@ class GuideController implements Controller {
           view: '$_id.view',
           skills: '$_id.skills',
           name: '$_id.name',
+          items: '$_id.items',
           path: '$_id.path',
           championId: '$_id.championId',
           summoners: '$_id.summoners',
-          items: '$_id.items',
+          runeSub1: '$_id.runeSub1',
+          runeSub2: '$_id.runeSub2',
           position: '$_id.position',
           introduce: '$_id.introduce',
           guide: '$_id.guide',
           play: '$_id.play',
           videos: '$_id.videos',
-          runes: '$runes',
+          runePrimary: {
+            id: '$_id.primary.id',
+            name: '$_id.primary.name',
+            color: '$_id.primary.color',
+            image: '$_id.primary.image',
+            data: '$primaryData',
+          },
+        },
+      },
+      {
+        $unwind: '$runeSub1.data',
+      },
+      {
+        $lookup: {
+          from: 'mainrunes',
+          localField: 'runeSub1.id',
+          foreignField: 'id',
+          as: 'runeSub1.id',
+        },
+      },
+      {
+        $lookup: {
+          from: 'runedetails',
+          localField: 'runeSub1.data.id',
+          foreignField: 'id',
+          as: 'runeSub1.data.id',
+        },
+      },
+      {
+        $unwind: '$runeSub1.id',
+      },
+      {
+        $unwind: '$runeSub1.data.id',
+      },
+      {
+        $project: {
+          _id: 0,
+          view: 1,
+          skills: 1,
+          items: 1,
+          name: 1,
+          path: 1,
+          championId: 1,
+          summoners: 1,
+          runePrimary: 1,
+          runeSub2: 1,
+          position: 1,
+          introduce: 1,
+          guide: 1,
+          play: 1,
+          videos: 1,
+          runeSub1: 1,
+          sub1: {
+            id: '$runeSub1.id.id',
+            name: '$runeSub1.id.name',
+            color: '$runeSub1.id.color',
+            image: {
+              $concat: [constants.URL_IMAGE_RUNE, '/', '$runeSub1.id.icon'],
+            },
+          },
+          sub1Data: '$runeSub1.data',
+        },
+      },
+      {
+        $group: {
+          _id: {
+            view: '$view',
+            skills: '$skills',
+            name: '$name',
+            items: '$items',
+            path: '$path',
+            championId: '$championId',
+            summoners: '$summoners',
+            runePrimary: '$runePrimary',
+            runeSub2: '$runeSub2',
+            position: '$position',
+            introduce: '$introduce',
+            guide: '$guide',
+            play: '$play',
+            videos: '$videos',
+            sub1: '$sub1',
+          },
+          sub1Data: {
+            $push: '$sub1Data',
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          view: '$_id.view',
+          skills: '$_id.skills',
+          name: '$_id.name',
+          items: '$_id.items',
+          path: '$_id.path',
+          championId: '$_id.championId',
+          summoners: '$_id.summoners',
+          runePrimary: '$_id.runePrimary',
+          runeSub2: '$_id.runeSub2',
+          position: '$_id.position',
+          introduce: '$_id.introduce',
+          guide: '$_id.guide',
+          play: '$_id.play',
+          videos: '$_id.videos',
+          runeSub1: {
+            id: '$_id.sub1.id',
+            name: '$_id.sub1.name',
+            color: '$_id.sub1.color',
+            image: '$_id.sub1.image',
+            data: '$sub1Data',
+          },
+        },
+      },
+      {
+        $unwind: '$runeSub2',
+      },
+      {
+        $lookup: {
+          from: 'extrarunedetails',
+          localField: 'runeSub2.id',
+          foreignField: 'id',
+          as: 'runeSub2.id',
+        },
+      },
+      {
+        $unwind: '$runeSub2.id',
+      },
+      {
+        $group: {
+          _id: {
+            view: '$view',
+            skills: '$skills',
+            name: '$name',
+            items: '$items',
+            path: '$path',
+            championId: '$championId',
+            summoners: '$summoners',
+            runePrimary: '$runePrimary',
+            runeSub1: '$runeSub1',
+            position: '$position',
+            introduce: '$introduce',
+            guide: '$guide',
+            play: '$play',
+            videos: '$videos',
+          },
+          runeSub2: {
+            $push: '$runeSub2',
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          view: '$_id.view',
+          skills: '$_id.skills',
+          name: '$_id.name',
+          items: '$_id.items',
+          path: '$_id.path',
+          championId: '$_id.championId',
+          summoners: '$_id.summoners',
+          runePrimary: '$_id.runePrimary',
+          runeSub1: '$_id.runeSub1',
+          position: '$_id.position',
+          introduce: '$_id.introduce',
+          guide: '$_id.guide',
+          play: '$_id.play',
+          videos: '$_id.videos',
+          runeSub2: '$runeSub2',
         },
       },
       {
@@ -323,15 +477,17 @@ class GuideController implements Controller {
           view: 1,
           skills: 1,
           name: 1,
+          items: 1,
           path: 1,
           summoners: 1,
-          items: 1,
           position: 1,
           introduce: 1,
           guide: 1,
           play: 1,
           videos: 1,
-          runes: 1,
+          runePrimary: 1,
+          runeSub1: 1,
+          runeSub2: 1,
           champion: {
             id: '$champion.id',
             key: '$champion.key',
@@ -348,58 +504,56 @@ class GuideController implements Controller {
     ]);
     const responseData: any = result.map((item: any) => ({
       ...item,
-      summoners: item.summoners.map(({ data, index, title }: any) => ({
-        index,
-        data: data.map(({ id, name, description, image }: any) => ({
-          name,
-          description,
-          image: `${constants.URL_IMAGE_SUMMONER}/${image.full}`,
+      summoners: item.summoners
+        .sort((a: any, b: any) => a.index - b.index)
+        .map(({ id, data }: any) => ({
+          id,
+          name: data.name,
+          image: `${constants.URL_IMAGE_SUMMONER}/${data.image.full}`,
+          description: data.description,
         })),
-        title,
-      })),
-      items: item.items.map(({ data, index, title }: any) => ({
-        index,
-        data: data.map(({ id, name, description, image }: any) => ({
-          name,
-          description,
-          image: `${constants.URL_IMAGE_ITEM}/${image.full}`,
+      items: item.items
+        .sort((a: any, b: any) => a.index - b.index)
+        .map(({ id, data }: any) => ({
+          id,
+          name: data.name,
+          description: data.plaintext,
+          image: `${constants.URL_IMAGE_ITEM}/${data.image.full}`,
         })),
-        title,
-      })),
-      runes: item.runes.map(({ index, primary, sub1, sub2, title }: any) => ({
-        index,
-        primary: {
-          id: primary.id,
-          name: primary.name,
-          image: primary.image,
-          data: primary.data.map(({ id, name, icon }: any) => ({
+      runePrimary: {
+        id: item.runePrimary.id,
+        name: item.runePrimary.name,
+        color: item.runePrimary.color,
+        image: item.runePrimary.image,
+        data: item.runePrimary.data
+          .sort((a: any, b: any) => a.index - b.index)
+          .map(({ id: { id, name, icon } }: any) => ({
             id,
             name,
             image: `${constants.URL_IMAGE_RUNE}/${icon}`,
           })),
-          color: primary.color,
-        },
-        sub1: {
-          id: sub1.id,
-          name: sub1.name,
-          image: sub1.image,
-          data: sub1.data.map(({ id, name, icon }: any) => ({
+      },
+      runeSub1: {
+        id: item.runeSub1.id,
+        name: item.runeSub1.name,
+        color: item.runeSub1.color,
+        image: item.runeSub1.image,
+        data: item.runeSub1.data
+          .sort((a: any, b: any) => a.index - b.index)
+          .map(({ id: { id, name, icon } }: any) => ({
             id,
             name,
             image: `${constants.URL_IMAGE_RUNE}/${icon}`,
           })),
-          color: sub1.color,
-        },
-        sub2: {
-          data: sub2.data.map(({ id, name, color }: any) => ({
-            id,
-            name,
-            image: `${constants.URL_IMAGE_EXTRA_RUNE}/${id}.png`,
-            color,
-          })),
-        },
-        title,
-      })),
+      },
+      runeSub2: item.runeSub2
+        .sort((a: any, b: any) => a.index - b.index)
+        .map(({ id: { id, name, color } }: any) => ({
+          id,
+          name,
+          color,
+          image: `${constants.URL_IMAGE_EXTRA_RUNE}/${id}.png`,
+        })),
       champion: {
         ...item.champion,
         image: {
@@ -421,7 +575,7 @@ class GuideController implements Controller {
     }));
     response.send({
       code: 200,
-      data: responseData[0],
+      data: responseData,
     });
   };
 
