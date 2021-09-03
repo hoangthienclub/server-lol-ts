@@ -583,6 +583,7 @@ class GuideController implements Controller {
 
   private createGuide = async (request: any, response: Response) => {
     const data: any = request.body;
+    console.log(`createGuide: ${new Date()}, body: ${JSON.stringify(data)}`);
     data.guide = prepareData(data.guide);
     data.introduce = prepareData(data.introduce);
     const createGuide = new this.guide({
@@ -624,6 +625,7 @@ class GuideController implements Controller {
   private updateGuide = async (request: any, response: Response) => {
     const id = request.params.id;
     const data = request.body;
+    console.log(`createGuide: ${new Date()}, body: ${JSON.stringify(data)}`);
     if (data.guide) {
       data.guide = prepareData(data.guide);
     }

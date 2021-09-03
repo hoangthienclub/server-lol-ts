@@ -18,11 +18,16 @@ export const replaceAll = (str: string, find: string, replace: string) => {
 };
 
 export const prepareData = (data: string) => {
-  getAllIndexes(data, `${constants.URL_SERVER}/temp-files/`)
-    .map((i: any) => data.substr(i + 39, 17))
-    .map((i: any) => {
-      fs.renameSync(`public/temp-files/${i}`, `public/image-guides/${i}`);
-      return i;
-    });
-  return replaceAll(data, 'temp-files', 'image-guides');
+  try {
+    getAllIndexes(data, `${constants.URL_SERVER}/temp-files/`)
+      .map((i: any) => data.substr(i + 39, 17))
+      .map((i: any) => {
+        fs.renameSync(`public/temp-files/${i}`, `public/image-guides/${i}`);
+        return i;
+      });
+    return replaceAll(data, 'temp-files', 'image-guides');
+  } catch (err) {
+    console.log('prepareData: ', prepareData);
+    return data;
+  }
 };
