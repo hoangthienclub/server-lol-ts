@@ -446,7 +446,7 @@ class GuideController implements Controller {
       {
         _id: id,
       },
-      { expiredAt: true },
+      { expiredAt: new Date() },
     );
 
     response.send({
