@@ -584,8 +584,12 @@ class GuideController implements Controller {
   private createGuide = async (request: any, response: Response) => {
     const data: any = request.body;
     console.log(`createGuide: ${new Date()}, body: ${JSON.stringify(data)}`);
-    data.guide = prepareData(data.guide);
-    data.introduce = prepareData(data.introduce);
+    if (data.guide) {
+      data.guide = prepareData(data.guide);
+    }
+    if (data.introduce) {
+      data.introduce = prepareData(data.introduce);
+    }
     const createGuide = new this.guide({
       ...data,
       author: request.user._id,
