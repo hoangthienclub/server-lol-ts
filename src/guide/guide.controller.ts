@@ -544,15 +544,20 @@ class GuideController implements Controller {
           runeSub2: 1,
           champion: 1,
           championCounters: {
-            content: '$championCounters.content'
+            content: '$championCounters.content',
           },
           couterData: {
             id: '$championCounters.data.id.key',
             name: '$championCounters.data.id.name',
             image: {
-              $concat: [constants.URL_IMAGE_CHAMPION, '/', '$championCounters.data.id.id', '_0.jpg']
-            }
-          }
+              $concat: [
+                constants.URL_IMAGE_CHAMPION,
+                '/',
+                '$championCounters.data.id.id',
+                '_0.jpg',
+              ],
+            },
+          },
         },
       },
       {
@@ -573,7 +578,7 @@ class GuideController implements Controller {
             runeSub1: '$runeSub1',
             runeSub2: '$runeSub2',
             champion: '$champion',
-            championCounters: '$championCounters'
+            championCounters: '$championCounters',
           },
           couterData: {
             $push: '$couterData',
@@ -600,8 +605,8 @@ class GuideController implements Controller {
           champion: '$_id.champion',
           championCounters: {
             content: '$_id.championCounters.content',
-            data: '$couterData'
-          }
+            data: '$couterData',
+          },
         },
       },
     ]);
@@ -676,10 +681,18 @@ class GuideController implements Controller {
         })),
       },
     }));
+    const responseR = responseData && responseData.length > 0 ? responseData[0] : {};
+    if (responseR.view) {
+      await this.guide.updateOne(
+        {
+          path,
+        },
+        { view: responseR.view + 1 },
+      );
+    }
     response.send({
       code: 200,
-      // data: result
-      data: responseData && responseData.length > 0 ? responseData[0] : {},
+      data: responseR
     });
   };
 
