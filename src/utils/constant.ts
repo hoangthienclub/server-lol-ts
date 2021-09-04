@@ -8,6 +8,7 @@ export const URL_IMAGE_CHAMPION_SQUARE = 'https://api.thuvienmoba.com/champion';
 export const URL_IMAGE_CHAMPION_SPLASH = 'https://api.thuvienmoba.com/img/champion/splash';
 export const URL_IMAGE_CHAMPION_SPELL = 'https://api.thuvienmoba.com/spell';
 export const URL_IMAGE_CHAMPION_PASSIVE = 'https://api.thuvienmoba.com/passive';
+export const URL_IMAGE_BANNER = 'https://api.thuvienmoba.com/image-banners';
 export const ROLES = {
   ADMIN: 1,
 };

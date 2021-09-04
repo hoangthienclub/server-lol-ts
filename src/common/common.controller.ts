@@ -7,6 +7,8 @@ import championModel from '../champion/champion.model';
 import summonerModel from '../summoner/summoner.model';
 import mainRuneModel from '../mainRune/mainRune.model';
 import extraRuneModel from '../extraRune/model';
+import guideModel from '../guide/guide.model';
+import bannerModel from '../banner/model';
 
 class HistoryController implements Controller {
   public path = '/common';
@@ -16,6 +18,8 @@ class HistoryController implements Controller {
   private champion = championModel;
   private mainRune = mainRuneModel;
   private extraRune = extraRuneModel;
+  private guide = guideModel;
+  private banner = bannerModel;
 
   constructor() {
     this.initializeRoutes();
@@ -24,6 +28,7 @@ class HistoryController implements Controller {
   private initializeRoutes() {
     this.router.post(`${this.path}/upload-image`, this.uploadImage);
     this.router.get(`${this.path}/all-data`, this.getAllData);
+    this.router.get(`${this.path}/dashboard`, this.getDashboard);
   }
 
   private uploadImage = async (request: any, response: Response) => {
@@ -92,6 +97,113 @@ class HistoryController implements Controller {
         })),
       })),
     };
+    response.send({
+      code: 200,
+      data: responseData,
+    });
+  };
+
+  private getDashboard = async (request: any, response: Response) => {
+    const guideViews = await this.guide.aggregate([
+      {
+        $match: { expiredAt: { $exists: false } },
+      },
+      {
+        $lookup: {
+          from: 'champions',
+          localField: 'championId',
+          foreignField: 'key',
+          as: 'champion',
+        },
+      },
+      {
+        $unwind: { path: '$champion', preserveNullAndEmptyArrays: true },
+      },
+      {
+        $project: {
+          _id: 1,
+          view: 1,
+          items: 1,
+          introduce: 1,
+          name: 1,
+          path: 1,
+          champion: {
+            id: '$champion.key',
+            name: '$champion.name',
+            url: {
+              $concat: [constants.URL_IMAGE_CHAMPION_SPLASH, '/', '$champion.id', '_0.jpg'],
+            },
+          },
+        },
+      },
+      { $sort: { view: -1 } },
+      { $limit: 6 },
+    ]);
+    const guideNews = await this.guide.aggregate([
+      {
+        $match: { expiredAt: { $exists: false } },
+      },
+      {
+        $lookup: {
+          from: 'champions',
+          localField: 'championId',
+          foreignField: 'key',
+          as: 'champion',
+        },
+      },
+      {
+        $unwind: { path: '$champion', preserveNullAndEmptyArrays: true },
+      },
+      {
+        $project: {
+          _id: 1,
+          view: 1,
+          items: 1,
+          introduce: 1,
+          name: 1,
+          path: 1,
+          champion: {
+            id: '$champion.key',
+            name: '$champion.name',
+            url: {
+              $concat: [constants.URL_IMAGE_CHAMPION_SPLASH, '/', '$champion.id', '_0.jpg'],
+            },
+          },
+        },
+      },
+      { $sort: { createdAt: -1 } },
+      { $limit: 6 },
+    ]);
+
+    const banners = await this.banner
+      .find({ expiredAt: { $exists: false } })
+      .sort({ createdAt: -1 })
+      .limit(5);
+
+    const responseData = {
+      view: guideViews.map((item: any) => ({
+        ...item,
+        items: item.items
+          .sort((a: any, b: any) => a.index - b.index)
+          .map(({ id }: any) => `${constants.URL_IMAGE_ITEM}/${id}.png`),
+      })),
+      news: guideNews.map((item: any) => ({
+        ...item,
+        items: item.items
+          .sort((a: any, b: any) => a.index - b.index)
+          .map(({ id }: any) => `${constants.URL_IMAGE_ITEM}/${id}.png`),
+      })),
+      strongs: guideViews.map((item: any) => ({
+        ...item,
+        items: item.items
+          .sort((a: any, b: any) => a.index - b.index)
+          .map(({ id }: any) => `${constants.URL_IMAGE_ITEM}/${id}.png`),
+      })),
+      banners: banners.map(({ url, image }: any) => ({
+        url, image: `${constants.URL_IMAGE_BANNER}/${image}`
+      })),
+    };
+
     response.send({
       code: 200,
       data: responseData,

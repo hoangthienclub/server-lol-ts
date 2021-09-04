@@ -25,7 +25,11 @@ class ExtraRuneController implements Controller {
       .find({ expiredAt: { $exists: false } })
       .sort({ createdAt: -1 })
       .limit(5);
-    response.send(result);
+
+    response.send({
+      code: 200,
+      data: result,
+    });
   };
 
   private create = async (request: any, response: Response) => {
