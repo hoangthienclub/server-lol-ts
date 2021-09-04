@@ -181,25 +181,25 @@ class HistoryController implements Controller {
       .limit(5);
 
     const responseData = {
-      view: guideViews.map((item: any) => ({
+      mostViewList: guideViews.map((item: any) => ({
         ...item,
         items: item.items
           .sort((a: any, b: any) => a.index - b.index)
           .map(({ id }: any) => `${constants.URL_IMAGE_ITEM}/${id}.png`),
       })),
-      news: guideNews.map((item: any) => ({
+      newestList: guideNews.map((item: any) => ({
         ...item,
         items: item.items
           .sort((a: any, b: any) => a.index - b.index)
           .map(({ id }: any) => `${constants.URL_IMAGE_ITEM}/${id}.png`),
       })),
-      strongs: guideViews.map((item: any) => ({
+      metaList: guideViews.map((item: any) => ({
         ...item,
         items: item.items
           .sort((a: any, b: any) => a.index - b.index)
           .map(({ id }: any) => `${constants.URL_IMAGE_ITEM}/${id}.png`),
       })),
-      banners: banners.map(({ url, image }: any) => ({
+      bannerList: banners.map(({ url, image }: any) => ({
         url, image: `${constants.URL_IMAGE_BANNER}/${image}`
       })),
     };
