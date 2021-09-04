@@ -106,7 +106,7 @@ class GuideController implements Controller {
             view: '$view',
             skills: '$skills',
             name: '$name',
-            championCouters: '$championCouters',
+            championCounters: '$championCounters',
             path: '$path',
             championId: '$championId',
             items: '$items',
@@ -130,7 +130,7 @@ class GuideController implements Controller {
           view: '$_id.view',
           skills: '$_id.skills',
           name: '$_id.name',
-          championCouters: '$_id.championCouters',
+          championCounters: '$_id.championCounters',
           path: '$_id.path',
           championId: '$_id.championId',
           items: '$_id.items',
@@ -165,7 +165,7 @@ class GuideController implements Controller {
             view: '$view',
             skills: '$skills',
             name: '$name',
-            championCouters: '$championCouters',
+            championCounters: '$championCounters',
             path: '$path',
             championId: '$championId',
             summoners: '$summoners',
@@ -189,7 +189,7 @@ class GuideController implements Controller {
           view: '$_id.view',
           skills: '$_id.skills',
           name: '$_id.name',
-          championCouters: '$_id.championCouters',
+          championCounters: '$_id.championCounters',
           path: '$_id.path',
           championId: '$_id.championId',
           summoners: '$_id.summoners',
@@ -235,7 +235,7 @@ class GuideController implements Controller {
           view: 1,
           skills: 1,
           name: 1,
-          championCouters: 1,
+          championCounters: 1,
           path: 1,
           championId: 1,
           summoners: 1,
@@ -265,7 +265,7 @@ class GuideController implements Controller {
             view: '$view',
             skills: '$skills',
             name: '$name',
-            championCouters: '$championCouters',
+            championCounters: '$championCounters',
             items: '$items',
             path: '$path',
             championId: '$championId',
@@ -290,7 +290,7 @@ class GuideController implements Controller {
           view: '$_id.view',
           skills: '$_id.skills',
           name: '$_id.name',
-          championCouters: '$_id.championCouters',
+          championCounters: '$_id.championCounters',
           items: '$_id.items',
           path: '$_id.path',
           championId: '$_id.championId',
@@ -343,7 +343,7 @@ class GuideController implements Controller {
           skills: 1,
           items: 1,
           name: 1,
-          championCouters: 1,
+          championCounters: 1,
           path: 1,
           championId: 1,
           summoners: 1,
@@ -372,7 +372,7 @@ class GuideController implements Controller {
             view: '$view',
             skills: '$skills',
             name: '$name',
-            championCouters: '$championCouters',
+            championCounters: '$championCounters',
             items: '$items',
             path: '$path',
             championId: '$championId',
@@ -397,7 +397,7 @@ class GuideController implements Controller {
           view: '$_id.view',
           skills: '$_id.skills',
           name: '$_id.name',
-          championCouters: '$_id.championCouters',
+          championCounters: '$_id.championCounters',
           items: '$_id.items',
           path: '$_id.path',
           championId: '$_id.championId',
@@ -438,7 +438,7 @@ class GuideController implements Controller {
             view: '$view',
             skills: '$skills',
             name: '$name',
-            championCouters: '$championCouters',
+            championCounters: '$championCounters',
             items: '$items',
             path: '$path',
             championId: '$championId',
@@ -462,7 +462,7 @@ class GuideController implements Controller {
           view: '$_id.view',
           skills: '$_id.skills',
           name: '$_id.name',
-          championCouters: '$_id.championCouters',
+          championCounters: '$_id.championCounters',
           items: '$_id.items',
           path: '$_id.path',
           championId: '$_id.championId',
@@ -491,7 +491,7 @@ class GuideController implements Controller {
           view: 1,
           skills: 1,
           name: 1,
-          championCouters: 1,
+          championCounters: 1,
           items: 1,
           path: 1,
           summoners: 1,
@@ -516,16 +516,16 @@ class GuideController implements Controller {
           },
         },
       },
-      { $unwind: '$championCouters.data' },
+      { $unwind: '$championCounters.data' },
       {
         $lookup: {
           from: 'champions',
-          localField: 'championCouters.data.id',
+          localField: 'championCounters.data.id',
           foreignField: 'key',
-          as: 'championCouters.data.id',
+          as: 'championCounters.data.id',
         },
       },
-      { $unwind: '$championCouters.data.id' },
+      { $unwind: '$championCounters.data.id' },
       {
         $project: {
           view: 1,
@@ -543,14 +543,14 @@ class GuideController implements Controller {
           runeSub1: 1,
           runeSub2: 1,
           champion: 1,
-          championCouters: {
-            content: '$championCouters.content'
+          championCounters: {
+            content: '$championCounters.content'
           },
           couterData: {
-            id: '$championCouters.data.id.key',
-            name: '$championCouters.data.id.name',
+            id: '$championCounters.data.id.key',
+            name: '$championCounters.data.id.name',
             image: {
-              $concat: [constants.URL_IMAGE_CHAMPION, '/', '$championCouters.data.id.id', '_0.jpg']
+              $concat: [constants.URL_IMAGE_CHAMPION, '/', '$championCounters.data.id.id', '_0.jpg']
             }
           }
         },
@@ -573,7 +573,7 @@ class GuideController implements Controller {
             runeSub1: '$runeSub1',
             runeSub2: '$runeSub2',
             champion: '$champion',
-            championCouters: '$championCouters'
+            championCounters: '$championCounters'
           },
           couterData: {
             $push: '$couterData',
@@ -598,8 +598,8 @@ class GuideController implements Controller {
           runeSub1: '$_id.runeSub1',
           runeSub2: '$_id.runeSub2',
           champion: '$_id.champion',
-          championCouters: {
-            content: '$_id.championCouters.content',
+          championCounters: {
+            content: '$_id.championCounters.content',
             data: '$couterData'
           }
         },
@@ -692,6 +692,9 @@ class GuideController implements Controller {
     if (data.introduce) {
       data.introduce = prepareData(data.introduce);
     }
+    if (data.championCounters && data.championCounters.content) {
+      data.championCounters.content = prepareData(data.championCounters.content);
+    }
     const createGuide = new this.guide({
       ...data,
       author: request.user._id,
@@ -737,6 +740,9 @@ class GuideController implements Controller {
     }
     if (data.introduce) {
       data.introduce = prepareData(data.introduce);
+    }
+    if (data.championCounters && data.championCounters.content) {
+      data.championCounters.content = prepareData(data.championCounters.content);
     }
     const result = await this.guide.findOneAndUpdate({ _id: id }, { $set: data }, { new: true });
 

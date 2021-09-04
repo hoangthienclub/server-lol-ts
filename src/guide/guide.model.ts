@@ -23,7 +23,7 @@ const guideSchema = new mongoose.Schema(
     introduce: String,
     guide: Object,
     videos: Object,
-    championCouters: Object,
+    championCounters: Object,
     view: {
       type: Number,
       default: 0,
