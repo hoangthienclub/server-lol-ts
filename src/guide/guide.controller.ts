@@ -26,13 +26,13 @@ class GuideController implements Controller {
   }
 
   private getAllGuides = async (request: Request, response: Response) => {
-    const { limit = 10, page = 1 } = request.query;
+    const { limit = 10, page = 1, search = '' } = request.query;
 
     const offset = +limit * +page - +limit;
 
     const result = await this.guide.aggregate([
       {
-        $match: { expiredAt: { $exists: false } },
+        $match: { expiredAt: { $exists: false }, name: { $regex: search, $options: 'i' } },
       },
       {
         $lookup: {
@@ -74,7 +74,10 @@ class GuideController implements Controller {
     response.send({
       code: 200,
       data: {
-        totalItems: await this.guide.count({ expiredAt: { $exists: false } }),
+        totalItems: await this.guide.count({
+          expiredAt: { $exists: false },
+          name: { $regex: search, $options: 'i' },
+        }),
         data: responseData,
       },
     });
@@ -516,7 +519,12 @@ class GuideController implements Controller {
           },
         },
       },
-      { $unwind: '$championCounters.data' },
+      {
+        $unwind: {
+          path: '$championCounters.data',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
       {
         $lookup: {
           from: 'champions',
@@ -525,7 +533,7 @@ class GuideController implements Controller {
           as: 'championCounters.data.id',
         },
       },
-      { $unwind: '$championCounters.data.id' },
+      { $unwind: { path: '$championCounters.data.id', preserveNullAndEmptyArrays: true } },
       {
         $project: {
           view: 1,
@@ -692,7 +700,7 @@ class GuideController implements Controller {
     }
     response.send({
       code: 200,
-      data: responseR
+      data: responseR,
     });
   };
 
