@@ -106,6 +106,7 @@ class GuideController implements Controller {
             view: '$view',
             skills: '$skills',
             name: '$name',
+            championCouters: '$championCouters',
             path: '$path',
             championId: '$championId',
             items: '$items',
@@ -129,6 +130,7 @@ class GuideController implements Controller {
           view: '$_id.view',
           skills: '$_id.skills',
           name: '$_id.name',
+          championCouters: '$_id.championCouters',
           path: '$_id.path',
           championId: '$_id.championId',
           items: '$_id.items',
@@ -163,6 +165,7 @@ class GuideController implements Controller {
             view: '$view',
             skills: '$skills',
             name: '$name',
+            championCouters: '$championCouters',
             path: '$path',
             championId: '$championId',
             summoners: '$summoners',
@@ -186,6 +189,7 @@ class GuideController implements Controller {
           view: '$_id.view',
           skills: '$_id.skills',
           name: '$_id.name',
+          championCouters: '$_id.championCouters',
           path: '$_id.path',
           championId: '$_id.championId',
           summoners: '$_id.summoners',
@@ -231,6 +235,7 @@ class GuideController implements Controller {
           view: 1,
           skills: 1,
           name: 1,
+          championCouters: 1,
           path: 1,
           championId: 1,
           summoners: 1,
@@ -260,6 +265,7 @@ class GuideController implements Controller {
             view: '$view',
             skills: '$skills',
             name: '$name',
+            championCouters: '$championCouters',
             items: '$items',
             path: '$path',
             championId: '$championId',
@@ -284,6 +290,7 @@ class GuideController implements Controller {
           view: '$_id.view',
           skills: '$_id.skills',
           name: '$_id.name',
+          championCouters: '$_id.championCouters',
           items: '$_id.items',
           path: '$_id.path',
           championId: '$_id.championId',
@@ -336,6 +343,7 @@ class GuideController implements Controller {
           skills: 1,
           items: 1,
           name: 1,
+          championCouters: 1,
           path: 1,
           championId: 1,
           summoners: 1,
@@ -364,6 +372,7 @@ class GuideController implements Controller {
             view: '$view',
             skills: '$skills',
             name: '$name',
+            championCouters: '$championCouters',
             items: '$items',
             path: '$path',
             championId: '$championId',
@@ -388,6 +397,7 @@ class GuideController implements Controller {
           view: '$_id.view',
           skills: '$_id.skills',
           name: '$_id.name',
+          championCouters: '$_id.championCouters',
           items: '$_id.items',
           path: '$_id.path',
           championId: '$_id.championId',
@@ -428,6 +438,7 @@ class GuideController implements Controller {
             view: '$view',
             skills: '$skills',
             name: '$name',
+            championCouters: '$championCouters',
             items: '$items',
             path: '$path',
             championId: '$championId',
@@ -451,6 +462,7 @@ class GuideController implements Controller {
           view: '$_id.view',
           skills: '$_id.skills',
           name: '$_id.name',
+          championCouters: '$_id.championCouters',
           items: '$_id.items',
           path: '$_id.path',
           championId: '$_id.championId',
@@ -479,6 +491,7 @@ class GuideController implements Controller {
           view: 1,
           skills: 1,
           name: 1,
+          championCouters: 1,
           items: 1,
           path: 1,
           summoners: 1,
@@ -501,6 +514,94 @@ class GuideController implements Controller {
             passive: '$champion.passive',
             spells: '$champion.spells',
           },
+        },
+      },
+      { $unwind: '$championCouters.data' },
+      {
+        $lookup: {
+          from: 'champions',
+          localField: 'championCouters.data.id',
+          foreignField: 'key',
+          as: 'championCouters.data.id',
+        },
+      },
+      { $unwind: '$championCouters.data.id' },
+      {
+        $project: {
+          view: 1,
+          skills: 1,
+          name: 1,
+          items: 1,
+          path: 1,
+          summoners: 1,
+          position: 1,
+          introduce: 1,
+          guide: 1,
+          play: 1,
+          videos: 1,
+          runePrimary: 1,
+          runeSub1: 1,
+          runeSub2: 1,
+          champion: 1,
+          championCouters: {
+            content: '$championCouters.content'
+          },
+          couterData: {
+            id: '$championCouters.data.id.key',
+            name: '$championCouters.data.id.name',
+            image: {
+              $concat: [constants.URL_IMAGE_CHAMPION, '/', '$championCouters.data.id.id', '_0.jpg']
+            }
+          }
+        },
+      },
+      {
+        $group: {
+          _id: {
+            view: '$view',
+            skills: '$skills',
+            name: '$name',
+            items: '$items',
+            path: '$path',
+            summoners: '$summoners',
+            position: '$position',
+            introduce: '$introduce',
+            guide: '$guide',
+            play: '$play',
+            videos: '$videos',
+            runePrimary: '$runePrimary',
+            runeSub1: '$runeSub1',
+            runeSub2: '$runeSub2',
+            champion: '$champion',
+            championCouters: '$championCouters'
+          },
+          couterData: {
+            $push: '$couterData',
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          view: '$_id.view',
+          skills: '$_id.skills',
+          name: '$_id.name',
+          items: '$_id.items',
+          path: '$_id.path',
+          summoners: '$_id.summoners',
+          position: '$_id.position',
+          introduce: '$_id.introduce',
+          guide: '$_id.guide',
+          play: '$_id.play',
+          videos: '$_id.videos',
+          runePrimary: '$_id.runePrimary',
+          runeSub1: '$_id.runeSub1',
+          runeSub2: '$_id.runeSub2',
+          champion: '$_id.champion',
+          championCouters: {
+            content: '$_id.championCouters.content',
+            data: '$couterData'
+          }
         },
       },
     ]);
@@ -577,6 +678,7 @@ class GuideController implements Controller {
     }));
     response.send({
       code: 200,
+      // data: result
       data: responseData && responseData.length > 0 ? responseData[0] : {},
     });
   };
