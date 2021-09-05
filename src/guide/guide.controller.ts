@@ -690,14 +690,16 @@ class GuideController implements Controller {
       },
     }));
     const responseR = responseData && responseData.length > 0 ? responseData[0] : {};
-    if (responseR.view) {
+    try {
       await this.guide.updateOne(
         {
           path,
         },
         { view: responseR.view + 1 },
       );
-    }
+    } catch (err) {
+      console.log('err:', err);
+    };
     response.send({
       code: 200,
       data: responseR,

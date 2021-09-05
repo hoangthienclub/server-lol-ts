@@ -63,7 +63,7 @@ class HistoryController implements Controller {
         key,
         image: `${constants.URL_IMAGE_SUMMONER}/${image.full}`,
       })),
-      champions: champions.map(({ key, name, image, spells, id }: any) => ({
+      champions: champions.map(({ key, name, image, spells, id, passive }: any) => ({
         key,
         name,
         image: `${constants.URL_IMAGE_CHAMPION}/${id}_0.jpg`,
@@ -72,6 +72,11 @@ class HistoryController implements Controller {
           name: item.name,
           image: `${constants.URL_IMAGE_CHAMPION_SPELL}/${item.image.full}`,
         })),
+        passive: {
+          id: `${id}P`,
+          name: passive.name,
+          image: `${constants.URL_IMAGE_CHAMPION_PASSIVE}/${passive.image.full}`
+        }
       })),
       mainRunes: mainRunes.map(({ id, key, icon, name, slots }: any) => ({
         id,
