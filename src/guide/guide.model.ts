@@ -16,6 +16,7 @@ const guideSchema = new mongoose.Schema(
     items: Object,
     extraItem: String,
     summoners: Object,
+    extraSummoner: String,
     runePrimary: Object,
     runeSub1: Object,
     runeSub2: Object,
