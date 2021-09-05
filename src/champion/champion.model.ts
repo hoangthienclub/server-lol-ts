@@ -20,8 +20,11 @@ const championSchema = new mongoose.Schema({
   recommended: Object,
   skins: Object,
   spells: Object,
-
   thumbnail: String,
+  isMeta: {
+    type: Boolean,
+    default: false
+  }
 });
 
 const championModel = mongoose.model<Champion & mongoose.Document>('Champion', championSchema);
