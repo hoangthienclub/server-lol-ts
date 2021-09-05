@@ -109,6 +109,7 @@ class GuideController implements Controller {
             view: '$view',
             skills: '$skills',
             name: '$name',
+            extraItem: '$extraItem',
             championCounters: '$championCounters',
             path: '$path',
             championId: '$championId',
@@ -133,6 +134,7 @@ class GuideController implements Controller {
           view: '$_id.view',
           skills: '$_id.skills',
           name: '$_id.name',
+          extraItem: '$_id.extraItem',
           championCounters: '$_id.championCounters',
           path: '$_id.path',
           championId: '$_id.championId',
@@ -168,6 +170,7 @@ class GuideController implements Controller {
             view: '$view',
             skills: '$skills',
             name: '$name',
+            extraItem: '$extraItem',
             championCounters: '$championCounters',
             path: '$path',
             championId: '$championId',
@@ -192,6 +195,7 @@ class GuideController implements Controller {
           view: '$_id.view',
           skills: '$_id.skills',
           name: '$_id.name',
+          extraItem: '$_id.extraItem',
           championCounters: '$_id.championCounters',
           path: '$_id.path',
           championId: '$_id.championId',
@@ -238,6 +242,7 @@ class GuideController implements Controller {
           view: 1,
           skills: 1,
           name: 1,
+          extraItem: 1,
           championCounters: 1,
           path: 1,
           championId: 1,
@@ -268,6 +273,7 @@ class GuideController implements Controller {
             view: '$view',
             skills: '$skills',
             name: '$name',
+            extraItem: '$extraItem',
             championCounters: '$championCounters',
             items: '$items',
             path: '$path',
@@ -293,6 +299,7 @@ class GuideController implements Controller {
           view: '$_id.view',
           skills: '$_id.skills',
           name: '$_id.name',
+          extraItem: '$_id.extraItem',
           championCounters: '$_id.championCounters',
           items: '$_id.items',
           path: '$_id.path',
@@ -346,6 +353,7 @@ class GuideController implements Controller {
           skills: 1,
           items: 1,
           name: 1,
+          extraItem: 1,
           championCounters: 1,
           path: 1,
           championId: 1,
@@ -375,6 +383,7 @@ class GuideController implements Controller {
             view: '$view',
             skills: '$skills',
             name: '$name',
+            extraItem: '$extraItem',
             championCounters: '$championCounters',
             items: '$items',
             path: '$path',
@@ -400,6 +409,7 @@ class GuideController implements Controller {
           view: '$_id.view',
           skills: '$_id.skills',
           name: '$_id.name',
+          extraItem: '$_id.extraItem',
           championCounters: '$_id.championCounters',
           items: '$_id.items',
           path: '$_id.path',
@@ -441,6 +451,7 @@ class GuideController implements Controller {
             view: '$view',
             skills: '$skills',
             name: '$name',
+            extraItem: '$extraItem',
             championCounters: '$championCounters',
             items: '$items',
             path: '$path',
@@ -465,6 +476,7 @@ class GuideController implements Controller {
           view: '$_id.view',
           skills: '$_id.skills',
           name: '$_id.name',
+          extraItem: '$_id.extraItem',
           championCounters: '$_id.championCounters',
           items: '$_id.items',
           path: '$_id.path',
@@ -494,6 +506,7 @@ class GuideController implements Controller {
           view: 1,
           skills: 1,
           name: 1,
+          extraItem: 1,
           championCounters: 1,
           items: 1,
           path: 1,
@@ -539,6 +552,7 @@ class GuideController implements Controller {
           view: 1,
           skills: 1,
           name: 1,
+          extraItem: 1,
           items: 1,
           path: 1,
           summoners: 1,
@@ -574,6 +588,7 @@ class GuideController implements Controller {
             view: '$view',
             skills: '$skills',
             name: '$name',
+            extraItem: '$extraItem',
             items: '$items',
             path: '$path',
             summoners: '$summoners',
@@ -599,6 +614,7 @@ class GuideController implements Controller {
           view: '$_id.view',
           skills: '$_id.skills',
           name: '$_id.name',
+          extraItem: '$_id.extraItem',
           items: '$_id.items',
           path: '$_id.path',
           summoners: '$_id.summoners',
@@ -715,6 +731,9 @@ class GuideController implements Controller {
     if (data.introduce) {
       data.introduce = prepareData(data.introduce);
     }
+    if (data.extraItem) {
+      data.extraItem = prepareData(data.extraItem);
+    }
     if (data.championCounters && data.championCounters.content) {
       data.championCounters.content = prepareData(data.championCounters.content);
     }
@@ -757,12 +776,15 @@ class GuideController implements Controller {
   private updateGuide = async (request: any, response: Response) => {
     const id = request.params.id;
     const data = request.body;
-    console.log(`createGuide: ${new Date()}, body: ${JSON.stringify(data)}`);
+    console.log(`update: ${new Date()}, body: ${JSON.stringify(data)}`);
     if (data.guide) {
       data.guide = prepareData(data.guide);
     }
     if (data.introduce) {
       data.introduce = prepareData(data.introduce);
+    }
+    if (data.extraItem) {
+      data.extraItem = prepareData(data.extraItem);
     }
     if (data.championCounters && data.championCounters.content) {
       data.championCounters.content = prepareData(data.championCounters.content);
