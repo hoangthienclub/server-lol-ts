@@ -17,7 +17,7 @@ class ExtraRuneController implements Controller {
 
   private initializeRoutes() {
     this.router.post(this.path, authMiddleware, this.create);
-    this.router.delete(this.path, authMiddleware, this.deleteBanner);
+    this.router.delete(`${this.path}/:id`, authMiddleware, this.deleteBanner);
     this.router.get(this.path, this.getAll);
   }
 
