@@ -15,6 +15,7 @@ const schema = new mongoose.Schema(
       ref: 'User',
       type: mongoose.Schema.Types.ObjectId,
     },
+    expiredAt: Date,
   },
   { timestamps: true },
 );
