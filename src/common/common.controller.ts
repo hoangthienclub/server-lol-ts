@@ -78,10 +78,11 @@ class HistoryController implements Controller {
           image: `${constants.URL_IMAGE_CHAMPION_PASSIVE}/${passive.image.full}`
         }
       })),
-      mainRunes: mainRunes.map(({ id, key, icon, name, slots }: any) => ({
+      mainRunes: mainRunes.map(({ id, key, icon, name, slots, color }: any) => ({
         id,
         key,
         name,
+        color,
         icon: `${constants.URL_IMAGE_RUNE}/${icon}`,
         slots: slots.map((slot: any) => ({
           runes: slot.runes.map((item: any) => ({
@@ -99,6 +100,7 @@ class HistoryController implements Controller {
           id: item.id,
           name: item.name,
           icon: `${constants.URL_IMAGE_EXTRA_RUNE}/${item.id}.png`,
+          color: item.color
         })),
       })),
     };
