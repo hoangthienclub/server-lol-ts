@@ -4,6 +4,7 @@ import authMiddleware from '../middleware/auth.middleware';
 import model from './model';
 import * as fs from 'fs';
 import { replaceAll } from '../utils/helpers';
+import * as constants from '../utils/constant';
 
 class ExtraRuneController implements Controller {
   public path = '/banners';
@@ -28,7 +29,10 @@ class ExtraRuneController implements Controller {
 
     response.send({
       code: 200,
-      data: result,
+      data: result.map((item: any) => ({
+        ...item.toJSON(),
+        image: `${constants.URL_IMAGE_BANNER}/${item.toJSON().image}`
+      })),
     });
   };
 
@@ -45,6 +49,7 @@ class ExtraRuneController implements Controller {
       url,
       image: pathFile,
       author: request.user._id,
+      title
     });
     const saveBanner = await createBanner.save();
     response.send({
