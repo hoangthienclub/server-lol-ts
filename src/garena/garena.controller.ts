@@ -47,9 +47,15 @@ class HistoryController implements Controller {
     const history = await axios.get(
       `${constants.urlGarena}/stats/game/VN/${id}?visiblePlatformId=VN`,
     );
+    const timeline = await axios.get(
+      `${constants.urlGarena}/stats/game/VN/${id}/timeline`,
+    );
     response.send({
       code: 200,
-      data: history.data,
+      data: {
+        ...history.data,
+        timeline: timeline.data
+      }
     });
   };
 
