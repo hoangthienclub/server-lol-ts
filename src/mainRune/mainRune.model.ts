@@ -10,7 +10,8 @@ const mainRuneSchema = new mongoose.Schema({
   key: String,
   icon: String,
   name: String,
-  slots: Object
+  slots: Object,
+  color: String,
 });
 
 const mainRuneModel = mongoose.model<MainRune & mongoose.Document>('Mainrune', mainRuneSchema);
