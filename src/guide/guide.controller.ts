@@ -57,7 +57,7 @@ class GuideController implements Controller {
           introduce: 1,
           name: 1,
           path: 1,
-          public: 1,
+          isPublic: 1,
           champion: {
             id: '$champion.key',
             name: '$champion.name',
