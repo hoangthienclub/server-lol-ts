@@ -9,6 +9,7 @@ import { prepareData } from '../utils/helpers';
 
 class GuideController implements Controller {
   public path = '/guides';
+  public adminPath = '/admin-guides';
   public router = Router();
   private guide = guideModel;
 
@@ -17,13 +18,75 @@ class GuideController implements Controller {
   }
 
   private initializeRoutes() {
+    this.router.post(this.adminPath, authMiddleware, this.createGuide);
+    this.router.delete(`${this.adminPath}/:id`, authMiddleware, this.deleteGuide);
+    this.router.put(`${this.adminPath}/:id`, authMiddleware, this.updateGuide);
+    this.router.get(this.adminPath, authMiddleware, this.getAllGuidesByAdmin);
+    this.router.get(`${this.adminPath}/detail/:id`, this.getById);
+
     this.router.get(this.path, this.getAllGuides);
-    this.router.post(this.path, authMiddleware, this.createGuide);
     this.router.get(`${this.path}/:path`, this.getByPath);
-    this.router.get(`${this.path}/detail/:id`, this.getById);
-    this.router.delete(`${this.path}/:id`, authMiddleware, this.deleteGuide);
-    this.router.put(`${this.path}/:id`, authMiddleware, this.updateGuide);
+    this.router.get(`${this.path}/list/all-paths`, this.getAllPath);
   }
+
+  private getAllGuidesByAdmin = async (request: Request, response: Response) => {
+    const { limit = 10, page = 1, search = '' } = request.query;
+
+    const offset = +limit * +page - +limit;
+
+    const result = await this.guide.aggregate([
+      {
+        $match: { expiredAt: { $exists: false }, name: { $regex: search, $options: 'i' } },
+      },
+      {
+        $lookup: {
+          from: 'champions',
+          localField: 'championId',
+          foreignField: 'key',
+          as: 'champion',
+        },
+      },
+      {
+        $unwind: { path: '$champion', preserveNullAndEmptyArrays: true },
+      },
+      {
+        $project: {
+          _id: 1,
+          view: 1,
+          items: 1,
+          introduce: 1,
+          name: 1,
+          path: 1,
+          public: 1,
+          champion: {
+            id: '$champion.key',
+            name: '$champion.name',
+            url: {
+              $concat: [constants.URL_IMAGE_CHAMPION_SPLASH, '/', '$champion.id', '_0.jpg'],
+            },
+          },
+        },
+      },
+      { $limit: +limit + offset },
+      { $skip: offset },
+    ]);
+    const responseData = result.map((item: any) => ({
+      ...item,
+      items: item.items
+        .sort((a: any, b: any) => a.index - b.index)
+        .map(({ id }: any) => `${constants.URL_IMAGE_ITEM}/${id}.png`),
+    }));
+    response.send({
+      code: 200,
+      data: {
+        totalItems: await this.guide.count({
+          expiredAt: { $exists: false },
+          name: { $regex: search, $options: 'i' },
+        }),
+        data: responseData,
+      },
+    });
+  };
 
   private getAllGuides = async (request: Request, response: Response) => {
     const { limit = 10, page = 1, search = '' } = request.query;
@@ -32,7 +95,11 @@ class GuideController implements Controller {
 
     const result = await this.guide.aggregate([
       {
-        $match: { expiredAt: { $exists: false }, name: { $regex: search, $options: 'i' } },
+        $match: {
+          expiredAt: { $exists: false },
+          name: { $regex: search, $options: 'i' },
+          isPublic: true,
+        },
       },
       {
         $lookup: {
@@ -77,6 +144,7 @@ class GuideController implements Controller {
         totalItems: await this.guide.count({
           expiredAt: { $exists: false },
           name: { $regex: search, $options: 'i' },
+          isPublic: true,
         }),
         data: responseData,
       },
@@ -111,6 +179,9 @@ class GuideController implements Controller {
             name: '$name',
             extraItem: '$extraItem',
             extraSummoner: '$extraSummoner',
+            seoTitle: '$seoTitle',
+            seoDesc: '$seoDesc',
+            seoImageUrl: '$seoImageUrl',
             championCounters: '$championCounters',
             path: '$path',
             championId: '$championId',
@@ -137,6 +208,9 @@ class GuideController implements Controller {
           name: '$_id.name',
           extraItem: '$_id.extraItem',
           extraSummoner: '$_id.extraSummoner',
+          seoTitle: '$_id.seoTitle',
+          seoDesc: '$_id.seoDesc',
+          seoImageUrl: '$_id.seoImageUrl',
           championCounters: '$_id.championCounters',
           path: '$_id.path',
           championId: '$_id.championId',
@@ -174,6 +248,9 @@ class GuideController implements Controller {
             name: '$name',
             extraItem: '$extraItem',
             extraSummoner: '$extraSummoner',
+            seoTitle: '$seoTitle',
+            seoDesc: '$seoDesc',
+            seoImageUrl: '$seoImageUrl',
             championCounters: '$championCounters',
             path: '$path',
             championId: '$championId',
@@ -200,6 +277,9 @@ class GuideController implements Controller {
           name: '$_id.name',
           extraItem: '$_id.extraItem',
           extraSummoner: '$_id.extraSummoner',
+          seoTitle: '$_id.seoTitle',
+          seoDesc: '$_id.seoDesc',
+          seoImageUrl: '$_id.seoImageUrl',
           championCounters: '$_id.championCounters',
           path: '$_id.path',
           championId: '$_id.championId',
@@ -248,6 +328,9 @@ class GuideController implements Controller {
           name: 1,
           extraItem: 1,
           extraSummoner: 1,
+          seoTitle: 1,
+          seoDesc: 1,
+          seoImageUrl: 1,
           championCounters: 1,
           path: 1,
           championId: 1,
@@ -280,6 +363,9 @@ class GuideController implements Controller {
             name: '$name',
             extraItem: '$extraItem',
             extraSummoner: '$extraSummoner',
+            seoTitle: '$seoTitle',
+            seoDesc: '$seoDesc',
+            seoImageUrl: '$seoImageUrl',
             championCounters: '$championCounters',
             items: '$items',
             path: '$path',
@@ -307,6 +393,9 @@ class GuideController implements Controller {
           name: '$_id.name',
           extraItem: '$_id.extraItem',
           extraSummoner: '$_id.extraSummoner',
+          seoTitle: '$_id.seoTitle',
+          seoDesc: '$_id.seoDesc',
+          seoImageUrl: '$_id.seoImageUrl',
           championCounters: '$_id.championCounters',
           items: '$_id.items',
           path: '$_id.path',
@@ -362,6 +451,9 @@ class GuideController implements Controller {
           name: 1,
           extraItem: 1,
           extraSummoner: 1,
+          seoTitle: 1,
+          seoDesc: 1,
+          seoImageUrl: 1,
           championCounters: 1,
           path: 1,
           championId: 1,
@@ -393,6 +485,9 @@ class GuideController implements Controller {
             name: '$name',
             extraItem: '$extraItem',
             extraSummoner: '$extraSummoner',
+            seoTitle: '$seoTitle',
+            seoDesc: '$seoDesc',
+            seoImageUrl: '$seoImageUrl',
             championCounters: '$championCounters',
             items: '$items',
             path: '$path',
@@ -420,6 +515,9 @@ class GuideController implements Controller {
           name: '$_id.name',
           extraItem: '$_id.extraItem',
           extraSummoner: '$_id.extraSummoner',
+          seoTitle: '$_id.seoTitle',
+          seoDesc: '$_id.seoDesc',
+          seoImageUrl: '$_id.seoImageUrl',
           championCounters: '$_id.championCounters',
           items: '$_id.items',
           path: '$_id.path',
@@ -463,6 +561,9 @@ class GuideController implements Controller {
             name: '$name',
             extraItem: '$extraItem',
             extraSummoner: '$extraSummoner',
+            seoTitle: '$seoTitle',
+            seoDesc: '$seoDesc',
+            seoImageUrl: '$seoImageUrl',
             championCounters: '$championCounters',
             items: '$items',
             path: '$path',
@@ -489,6 +590,9 @@ class GuideController implements Controller {
           name: '$_id.name',
           extraItem: '$_id.extraItem',
           extraSummoner: '$_id.extraSummoner',
+          seoTitle: '$_id.seoTitle',
+          seoDesc: '$_id.seoDesc',
+          seoImageUrl: '$_id.seoImageUrl',
           championCounters: '$_id.championCounters',
           items: '$_id.items',
           path: '$_id.path',
@@ -520,6 +624,9 @@ class GuideController implements Controller {
           name: 1,
           extraItem: 1,
           extraSummoner: 1,
+          seoTitle: 1,
+          seoDesc: 1,
+          seoImageUrl: 1,
           championCounters: 1,
           items: 1,
           path: 1,
@@ -567,6 +674,9 @@ class GuideController implements Controller {
           name: 1,
           extraItem: 1,
           extraSummoner: 1,
+          seoTitle: 1,
+          seoDesc: 1,
+          seoImageUrl: 1,
           items: 1,
           path: 1,
           summoners: 1,
@@ -604,6 +714,9 @@ class GuideController implements Controller {
             name: '$name',
             extraItem: '$extraItem',
             extraSummoner: '$extraSummoner',
+            seoTitle: '$seoTitle',
+            seoDesc: '$seoDesc',
+            seoImageUrl: '$seoImageUrl',
             items: '$items',
             path: '$path',
             summoners: '$summoners',
@@ -631,6 +744,9 @@ class GuideController implements Controller {
           name: '$_id.name',
           extraItem: '$_id.extraItem',
           extraSummoner: '$_id.extraSummoner',
+          seoTitle: '$_id.seoTitle',
+          seoDesc: '$_id.seoDesc',
+          seoImageUrl: '$_id.seoImageUrl',
           items: '$_id.items',
           path: '$_id.path',
           summoners: '$_id.summoners',
@@ -731,7 +847,7 @@ class GuideController implements Controller {
       );
     } catch (err) {
       console.log('err:', err);
-    };
+    }
     response.send({
       code: 200,
       data: responseR,
@@ -816,6 +932,19 @@ class GuideController implements Controller {
     response.send({
       code: 200,
       data: result,
+    });
+  };
+  private getAllPath = async (request: Request, response: Response) => {
+    const paths = await this.guide
+      .find({
+        expiredAt: { $exists: false },
+        isPublic: true,
+      })
+      .select('path')
+      .sort({ createdAt: -1 });
+    response.send({
+      code: 200,
+      data: paths,
     });
   };
 }

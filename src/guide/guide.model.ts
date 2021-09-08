@@ -35,6 +35,13 @@ const guideSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
     },
     expiredAt: Date,
+    seoTitle: String,
+    seoDesc: String,
+    seoImageUrl: String,
+    isPublic: {
+      type: Boolean,
+      default: false
+    }
   },
   { timestamps: true },
 );
