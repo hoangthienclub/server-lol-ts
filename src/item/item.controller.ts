@@ -3,6 +3,7 @@ import PostNotFoundException from '../exceptions/PostNotFoundException';
 import Controller from '../interfaces/controller.interface';
 import itemModel from './item.model';
 import * as constants from '../utils/constant';
+import { responseSuccess } from '../utils/helpers';
 
 class ItemController implements Controller {
   public path = '/items';
@@ -59,10 +60,7 @@ class ItemController implements Controller {
               }))
             : [],
       }));
-      response.send({
-        code: 200,
-        data: responseData,
-      });
+      responseSuccess(response, responseData);
     } catch (err) {
       console.log(err);
     }
@@ -92,8 +90,7 @@ class ItemController implements Controller {
           from: i.from,
         })),
       };
-
-      response.send(item);
+      responseSuccess(response, item);
     } else {
       next(new PostNotFoundException(id));
     }

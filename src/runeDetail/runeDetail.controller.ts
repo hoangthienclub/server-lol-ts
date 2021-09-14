@@ -2,6 +2,7 @@ import { Request, Response, NextFunction, Router } from 'express';
 import PostNotFoundException from '../exceptions/PostNotFoundException';
 import Controller from '../interfaces/controller.interface';
 import model from './runeDetail.model';
+import { responseSuccess } from '../utils/helpers';
 
 class RuneDetailController implements Controller {
   public path = '/rune-details';
@@ -18,7 +19,7 @@ class RuneDetailController implements Controller {
 
   private getAllRuneDetail = async (request: Request, response: Response) => {
     const result = await this.runeDetail.find();
-    response.send(result);
+    responseSuccess(response, result);
   }
 }
 

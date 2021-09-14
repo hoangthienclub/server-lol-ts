@@ -11,6 +11,7 @@ import User from '../user/user.interface';
 import userModel from './../user/user.model';
 import AuthenticationService from './authentication.service';
 import LogInDto from './logIn.dto';
+import { responseSuccess } from '../utils/helpers';
 
 class AuthenticationController implements Controller {
   public path = '/auth';
@@ -53,12 +54,9 @@ class AuthenticationController implements Controller {
       );
       if (isPasswordMatching) {
         const tokenData = this.createToken(user);
-        response.send({
-          code: 200,
-          data: {
-            ...user.toJSON(),
-            accessToken: tokenData.token,
-          },
+        responseSuccess(response, {
+          ...user.toJSON(),
+          accessToken: tokenData.token,
         });
       } else {
         next(new WrongCredentialsException());

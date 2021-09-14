@@ -5,7 +5,7 @@ import authMiddleware from '../middleware/auth.middleware';
 import Champion from './summoner.interface';
 import guideModel from './guide.model';
 import * as constants from '../utils/constant';
-import { prepareData } from '../utils/helpers';
+import { prepareData, responseSuccess } from '../utils/helpers';
 
 class GuideController implements Controller {
   public path = '/guides';
@@ -76,15 +76,12 @@ class GuideController implements Controller {
         .sort((a: any, b: any) => a.index - b.index)
         .map(({ id }: any) => `${constants.URL_IMAGE_ITEM}/${id}.png`),
     }));
-    response.send({
-      code: 200,
-      data: {
-        totalItems: await this.guide.count({
-          expiredAt: { $exists: false },
-          name: { $regex: search, $options: 'i' },
-        }),
-        data: responseData,
-      },
+    responseSuccess(response, {
+      totalItems: await this.guide.count({
+        expiredAt: { $exists: false },
+        name: { $regex: search, $options: 'i' },
+      }),
+      data: responseData,
     });
   };
 
@@ -138,16 +135,13 @@ class GuideController implements Controller {
         .sort((a: any, b: any) => a.index - b.index)
         .map(({ id }: any) => `${constants.URL_IMAGE_ITEM}/${id}.png`),
     }));
-    response.send({
-      code: 200,
-      data: {
-        totalItems: await this.guide.count({
-          expiredAt: { $exists: false },
-          name: { $regex: search, $options: 'i' },
-          isPublic: true,
-        }),
-        data: responseData,
-      },
+    responseSuccess(response, {
+      totalItems: await this.guide.count({
+        expiredAt: { $exists: false },
+        name: { $regex: search, $options: 'i' },
+        isPublic: true,
+      }),
+      data: responseData,
     });
   };
 
@@ -848,10 +842,7 @@ class GuideController implements Controller {
     } catch (err) {
       console.log('err:', err);
     }
-    response.send({
-      code: 200,
-      data: responseR,
-    });
+    responseSuccess(response, responseR);
   };
 
   private createGuide = async (request: any, response: Response) => {
@@ -877,10 +868,7 @@ class GuideController implements Controller {
       author: request.user._id,
     });
     const saveGuide = await createGuide.save();
-    response.send({
-      code: 200,
-      data: saveGuide,
-    });
+    responseSuccess(response, saveGuide);
   };
 
   private deleteGuide = async (request: any, response: Response) => {
@@ -891,21 +879,14 @@ class GuideController implements Controller {
       },
       { expiredAt: new Date() },
     );
-
-    response.send({
-      code: 200,
-      data: {},
-    });
+    responseSuccess(response, {});
   };
 
   private getById = async (request: any, response: Response) => {
     const id = request.params.id;
     const result = await this.guide.findById(id);
 
-    response.send({
-      code: 200,
-      data: result,
-    });
+    responseSuccess(response, result);
   };
 
   private updateGuide = async (request: any, response: Response) => {
@@ -929,10 +910,7 @@ class GuideController implements Controller {
     }
     const result = await this.guide.findOneAndUpdate({ _id: id }, { $set: data }, { new: true });
 
-    response.send({
-      code: 200,
-      data: result,
-    });
+    responseSuccess(response, result);
   };
   private getAllPath = async (request: Request, response: Response) => {
     const paths = await this.guide
@@ -942,10 +920,8 @@ class GuideController implements Controller {
       })
       .select('path')
       .sort({ createdAt: -1 });
-    response.send({
-      code: 200,
-      data: paths,
-    });
+
+    responseSuccess(response, paths);
   };
 }
 

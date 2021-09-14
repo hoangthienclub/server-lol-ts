@@ -25,7 +25,8 @@
     "object-shorthand-properties-first": false,
     "ter-indent": false,
     "no-conditional-assignment": false,
-    "triple-equals": false
+    "triple-equals": false,
+    "no-var-requires": false
   },
   "rulesDirectory": []
 }

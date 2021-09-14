@@ -4,6 +4,7 @@ import Controller from '../interfaces/controller.interface';
 import guideModel from '../guide/guide.model';
 import * as constants from '../utils/constant';
 import axios from 'axios';
+import { responseSuccess } from '../utils/helpers';
 
 class HistoryController implements Controller {
   public path = '/garena';
@@ -23,10 +24,7 @@ class HistoryController implements Controller {
   private getAccount = async (request: Request, response: Response) => {
     const name = request.query.name;
     const data: any = await axios.get(`${constants.urlGarena}/players?name=${name}&region=VN`);
-    response.send({
-      code: 200,
-      data: data.data,
-    });
+    responseSuccess(response, data.data);
   };
 
   private getHitories = async (request: Request, response: Response) => {
@@ -36,10 +34,7 @@ class HistoryController implements Controller {
     const histories = await axios.get(
       `${constants.urlGarena}/stats/player_history/VN/${accountId}?begIndex=${begIndex}&endIndex=${endIndex}`,
     );
-    response.send({
-      code: 200,
-      data: histories.data,
-    });
+    responseSuccess(response, histories.data);
   };
 
   private getHitoryId = async (request: Request, response: Response) => {
@@ -50,12 +45,9 @@ class HistoryController implements Controller {
     const timeline = await axios.get(
       `${constants.urlGarena}/stats/game/VN/${id}/timeline`,
     );
-    response.send({
-      code: 200,
-      data: {
-        ...history.data,
-        timeline: timeline.data
-      }
+    responseSuccess(response, {
+      ...history.data,
+      timeline: timeline.data
     });
   };
 
@@ -69,15 +61,9 @@ class HistoryController implements Controller {
       const histories = await axios.get(
         `${constants.urlGarena}/stats/player_history/VN/${accountId}?begIndex=${begIndex}&endIndex=${endIndex}`,
       );
-      response.send({
-        code: 200,
-        data: histories.data,
-      });
+      responseSuccess(response, histories.data);
     } catch (err) {
-      response.send({
-        code: 200,
-        data: {},
-      });
+      responseSuccess(response, {});
     }
   };
 }

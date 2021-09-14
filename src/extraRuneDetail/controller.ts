@@ -1,6 +1,7 @@
 import { Request, Response, Router } from 'express';
 import Controller from '../interfaces/controller.interface';
 import model from './model';
+import { responseSuccess } from '../utils/helpers';
 
 class ExtraRuneDetailController implements Controller {
   public path = '/extra-rune-details';
@@ -17,7 +18,7 @@ class ExtraRuneDetailController implements Controller {
 
   private getAll = async (request: Request, response: Response) => {
     const result = await this.newModel.find();
-    response.send(result);
+    responseSuccess(response, result);
   };
 }
 

@@ -1,5 +1,13 @@
 import * as constants from './constant';
 import * as fs from 'fs';
+const cryptoJS = require('crypto-js');
+// crypto module
+
+export const encrypt = (data: any) => {
+  const initVector = '2s_dnH5G4Cq+b_3?';
+  const ciphertext = cryptoJS.AES.encrypt(JSON.stringify(data), initVector).toString();
+  return ciphertext
+};
 
 export const getAllIndexes = (arr: any, val: string) => {
   const indexes: any = [];
@@ -30,4 +38,11 @@ export const prepareData = (data: string) => {
     console.log('prepareData: ', prepareData);
     return data;
   }
+};
+
+export const responseSuccess = (response: any, data: any) => {
+  response.send({
+    code: 200,
+    data: encrypt(data),
+  });
 };

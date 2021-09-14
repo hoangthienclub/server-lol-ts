@@ -5,6 +5,7 @@ import Controller from '../interfaces/controller.interface';
 import championModel from './champion.model';
 import guideModel from '../guide/guide.model';
 import * as constants from '../utils/constant';
+import { responseSuccess } from '../utils/helpers';
 
 class ChampionController implements Controller {
   public path = '/champions';
@@ -42,13 +43,10 @@ class ChampionController implements Controller {
           square: `${constants.URL_IMAGE_CHAMPION_SQUARE}/${item.id}.png`,
         },
         tags: item.tags,
-        isMeta: item.isMeta
+        isMeta: item.isMeta,
       };
     });
-    response.send({
-      code: 200,
-      data: result,
-    });
+    responseSuccess(response, result);
   };
 
   private getChampionId = async (request: Request, response: Response, next: NextFunction) => {
@@ -106,10 +104,7 @@ class ChampionController implements Controller {
       //     .sort((a: any, b: any) => a.index - b.index)
       //     .map(({ id }: any) => `${constants.URL_IMAGE_ITEM}/${id}.png`),
       // }));
-      response.send({
-        code: 200,
-        data: responseData,
-      });
+      responseSuccess(response, responseData);
     } else {
       next(new PostNotFoundException(id));
     }
@@ -155,10 +150,7 @@ class ChampionController implements Controller {
         tags: item.tags,
       };
     });
-    response.send({
-      code: 200,
-      data: result,
-    });
+    responseSuccess(response, result);
   };
 }
 

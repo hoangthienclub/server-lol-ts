@@ -3,6 +3,7 @@ import PostNotFoundException from '../exceptions/PostNotFoundException';
 import Controller from '../interfaces/controller.interface';
 import Champion from './summoner.interface';
 import summonerModel from './summoner.model';
+import { responseSuccess } from '../utils/helpers';
 
 class SummonerController implements Controller {
   public path = '/summoners';
@@ -19,7 +20,7 @@ class SummonerController implements Controller {
 
   private getAllSummoners = async (request: Request, response: Response) => {
     const result = await this.summoner.find().sort({ name: 1 });
-    response.send(result);
+    responseSuccess(response, result);
   }
 }
 

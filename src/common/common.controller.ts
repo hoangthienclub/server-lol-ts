@@ -9,6 +9,7 @@ import mainRuneModel from '../mainRune/mainRune.model';
 import extraRuneModel from '../extraRune/model';
 import guideModel from '../guide/guide.model';
 import bannerModel from '../banner/model';
+import { responseSuccess } from '../utils/helpers';
 
 class HistoryController implements Controller {
   public path = '/common';
@@ -38,10 +39,7 @@ class HistoryController implements Controller {
     );
     const pathFile = `${new Date().getTime()}${name}`;
     fs.writeFileSync(`public/temp-files/${pathFile}`, request.files.image.data);
-    response.send({
-      code: 200,
-      data: `${constants.URL_SERVER}/temp-files/${pathFile}`,
-    });
+    responseSuccess(response, `${constants.URL_SERVER}/temp-files/${pathFile}`);
   };
 
   private getAllData = async (request: any, response: Response) => {
@@ -75,8 +73,8 @@ class HistoryController implements Controller {
         passive: {
           id: `${id}P`,
           name: passive.name,
-          image: `${constants.URL_IMAGE_CHAMPION_PASSIVE}/${passive.image.full}`
-        }
+          image: `${constants.URL_IMAGE_CHAMPION_PASSIVE}/${passive.image.full}`,
+        },
       })),
       mainRunes: mainRunes.map(({ id, key, icon, name, slots, color }: any) => ({
         id,
@@ -100,14 +98,11 @@ class HistoryController implements Controller {
           id: item.id,
           name: item.name,
           icon: `${constants.URL_IMAGE_EXTRA_RUNE}/${item.id}.png`,
-          color: item.color
+          color: item.color,
         })),
       })),
     };
-    response.send({
-      code: 200,
-      data: responseData,
-    });
+    responseSuccess(response, responseData);
   };
 
   private getDashboard = async (request: any, response: Response) => {
@@ -207,14 +202,12 @@ class HistoryController implements Controller {
           .map(({ id }: any) => `${constants.URL_IMAGE_ITEM}/${id}.png`),
       })),
       bannerList: banners.map(({ url, image }: any) => ({
-        url, image: `${constants.URL_IMAGE_BANNER}/${image}`
+        url,
+        image: `${constants.URL_IMAGE_BANNER}/${image}`,
       })),
     };
 
-    response.send({
-      code: 200,
-      data: responseData,
-    });
+    responseSuccess(response, responseData);
   };
 }
 

@@ -3,6 +3,7 @@ import PostNotFoundException from '../exceptions/PostNotFoundException';
 import Controller from '../interfaces/controller.interface';
 import MainRune from './mainRune.interface';
 import MainRuneModel from './mainRune.model';
+import { responseSuccess } from '../utils/helpers';
 
 class SummonerController implements Controller {
   public path = '/main-runes';
@@ -19,7 +20,7 @@ class SummonerController implements Controller {
 
   private getAllRunes = async (request: Request, response: Response) => {
     const result = await this.mainRune.find();
-    response.send(result);
+    responseSuccess(response, result);
   };
 }
 
