@@ -909,7 +909,6 @@ class GuideController implements Controller {
   private updateGuide = async (request: any, response: Response) => {
     const id = request.params.id;
     const data = request.body;
-    console.log(`update: ${new Date()}, body: ${JSON.stringify(data)}`);
     if (data.guide) {
       data.guide = prepareData(data.guide);
     }
