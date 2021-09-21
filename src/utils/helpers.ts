@@ -50,6 +50,6 @@ export const responseSuccess = (response: any, data: any) => {
 export const responseError = (response: any, data: any) => {
   response.send({
     code: 500,
-    data: encrypt(data),
+    data
   });
 };

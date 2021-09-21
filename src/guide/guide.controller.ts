@@ -888,8 +888,7 @@ class GuideController implements Controller {
       const saveGuide = await createGuide.save();
       responseSuccess(response, saveGuide);
     } catch (err) {
-      console.log(err);
-      responseError(response, {});
+      responseError(response, err);
     }
   };
 
@@ -936,7 +935,7 @@ class GuideController implements Controller {
       responseSuccess(response, result);
     } catch (err) {
       console.log(err);
-      responseError(response, {});
+      responseError(response, err);
     }
   };
   private getAllPath = async (request: Request, response: Response) => {
