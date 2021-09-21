@@ -5,7 +5,7 @@ import authMiddleware from '../middleware/auth.middleware';
 import Champion from './summoner.interface';
 import guideModel from './guide.model';
 import * as constants from '../utils/constant';
-import { prepareData, responseSuccess } from '../utils/helpers';
+import { prepareData, responseSuccess, responseError } from '../utils/helpers';
 
 class GuideController implements Controller {
   public path = '/guides';
@@ -863,29 +863,34 @@ class GuideController implements Controller {
   };
 
   private createGuide = async (request: any, response: Response) => {
-    const data: any = request.body;
-    console.log(`createGuide: ${new Date()}, body: ${JSON.stringify(data)}`);
-    if (data.guide) {
-      data.guide = prepareData(data.guide);
+    try {
+      const data: any = request.body;
+      console.log(`createGuide: ${new Date()}, body: ${JSON.stringify(data)}`);
+      if (data.guide) {
+        data.guide = prepareData(data.guide);
+      }
+      if (data.introduce) {
+        data.introduce = prepareData(data.introduce);
+      }
+      if (data.extraItem) {
+        data.extraItem = prepareData(data.extraItem);
+      }
+      if (data.extraSummoner) {
+        data.extraSummoner = prepareData(data.extraSummoner);
+      }
+      if (data.championCounters && data.championCounters.content) {
+        data.championCounters.content = prepareData(data.championCounters.content);
+      }
+      const createGuide = new this.guide({
+        ...data,
+        author: request.user._id,
+      });
+      const saveGuide = await createGuide.save();
+      responseSuccess(response, saveGuide);
+    } catch (err) {
+      console.log(err);
+      responseError(response, {});
     }
-    if (data.introduce) {
-      data.introduce = prepareData(data.introduce);
-    }
-    if (data.extraItem) {
-      data.extraItem = prepareData(data.extraItem);
-    }
-    if (data.extraSummoner) {
-      data.extraSummoner = prepareData(data.extraSummoner);
-    }
-    if (data.championCounters && data.championCounters.content) {
-      data.championCounters.content = prepareData(data.championCounters.content);
-    }
-    const createGuide = new this.guide({
-      ...data,
-      author: request.user._id,
-    });
-    const saveGuide = await createGuide.save();
-    responseSuccess(response, saveGuide);
   };
 
   private deleteGuide = async (request: any, response: Response) => {
@@ -907,26 +912,32 @@ class GuideController implements Controller {
   };
 
   private updateGuide = async (request: any, response: Response) => {
-    const id = request.params.id;
-    const data = request.body;
-    if (data.guide) {
-      data.guide = prepareData(data.guide);
-    }
-    if (data.introduce) {
-      data.introduce = prepareData(data.introduce);
-    }
-    if (data.extraItem) {
-      data.extraItem = prepareData(data.extraItem);
-    }
-    if (data.extraSummoner) {
-      data.extraSummoner = prepareData(data.extraSummoner);
-    }
-    if (data.championCounters && data.championCounters.content) {
-      data.championCounters.content = prepareData(data.championCounters.content);
-    }
-    const result = await this.guide.findOneAndUpdate({ _id: id }, { $set: data }, { new: true });
+    try {
+      const id = request.params.id;
+      const data = request.body;
+      console.log(`updateGuide: ${new Date()}, body: ${JSON.stringify(data)}`);
+      if (data.guide) {
+        data.guide = prepareData(data.guide);
+      }
+      if (data.introduce) {
+        data.introduce = prepareData(data.introduce);
+      }
+      if (data.extraItem) {
+        data.extraItem = prepareData(data.extraItem);
+      }
+      if (data.extraSummoner) {
+        data.extraSummoner = prepareData(data.extraSummoner);
+      }
+      if (data.championCounters && data.championCounters.content) {
+        data.championCounters.content = prepareData(data.championCounters.content);
+      }
+      const result = await this.guide.findOneAndUpdate({ _id: id }, { $set: data }, { new: true });
 
-    responseSuccess(response, result);
+      responseSuccess(response, result);
+    } catch (err) {
+      console.log(err);
+      responseError(response, {});
+    }
   };
   private getAllPath = async (request: Request, response: Response) => {
     const paths = await this.guide
